@@ -2,6 +2,9 @@
   "name": "craftnest-server",
   "version": "1.0.0",
   "description": "CraftNest - Handmade with Heart REST API Server",
+  "engines": {
+    "node": ">=20"
+  },
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

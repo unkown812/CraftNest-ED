@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: craftnest-api
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false # you'll paste your Atlas URI in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true # auto-generates a strong secret
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: FRONTEND_URL
+        sync: false # you'll paste your Vercel URL after frontend deploy
+      - key: PLATFORM_COMMISSION_PERCENT
+        value: 10
