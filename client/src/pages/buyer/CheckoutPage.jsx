@@ -8,8 +8,8 @@ import {
   Lock,
   ArrowRight,
   AlertCircle,
-  Sparkles,
-  Smartphone
+  Smartphone,
+  ShoppingBag
 } from 'lucide-react';
 import api from '../../api/client';
 import { useCart } from '../../context/CartContext';
@@ -56,14 +56,15 @@ const CheckoutPage = () => {
 
   if (!cart.items || cart.items.length === 0) {
     return (
-      <div style={{ backgroundColor: 'var(--color-warm-cream)', minHeight: '80vh', padding: '5rem 0', textAlign: 'center' }}>
-        <div className="container" style={{ maxWidth: '500px' }}>
-          <h2>Your basket is empty</h2>
-          <p style={{ color: 'var(--color-text-muted)', margin: '1rem 0 2rem 0' }}>
-            Please add items to your basket before checking out.
-          </p>
+      <div className="container" style={{ paddingTop: 'var(--space-xl)', paddingBottom: 'var(--space-xxl)' }}>
+        <div className="empty-state">
+          <div className="empty-icon">
+            <ShoppingBag size={24} aria-hidden="true" />
+          </div>
+          <h3 className="t-headline">Your basket is empty</h3>
+          <p className="t-body-sm">Please add items to your basket before checking out.</p>
           <Link to="/shop" className="btn btn-primary">
-            Explore Crafts
+            Explore crafts
           </Link>
         </div>
       </div>
@@ -119,362 +120,382 @@ const CheckoutPage = () => {
     }
   };
 
+  const paymentOptions = [
+    {
+      value: 'TestCard',
+      icon: <CreditCard size={18} aria-hidden="true" />,
+      title: 'Instant Card Payment (Safe Sandbox Test Mode)',
+      hint: 'Simulates verified payment gateway without real charges.',
+      badge: 'Instant'
+    },
+    {
+      value: 'UPI',
+      icon: <Smartphone size={18} aria-hidden="true" />,
+      title: 'UPI Simulation (Google Pay / PhonePe / Paytm / BHIM)',
+      hint: 'Instant QR / VPA sandbox simulation.'
+    },
+    {
+      value: 'COD',
+      icon: <Truck size={18} aria-hidden="true" />,
+      title: 'Cash on Delivery (COD)',
+      hint: 'Pay cash upon arrival of your handmade parcel.'
+    }
+  ];
+
   return (
-    <div style={{ backgroundColor: 'var(--color-warm-cream)', minHeight: '85vh', padding: '3rem 0 6rem 0' }}>
-      <div className="container">
-        {/* Title */}
-        <div style={{ marginBottom: '2.5rem' }}>
-          <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '0.35rem' }}>
-            <Link to="/cart" style={{ color: 'inherit' }}>Basket</Link> /{' '}
-            <span style={{ color: 'var(--color-terracotta)', fontWeight: '600' }}>Safe Checkout</span>
-          </div>
-          <h1 style={{ fontSize: '2.4rem', margin: 0 }}>Checkout & Delivery</h1>
+    <div className="container" style={{ paddingTop: 'var(--space-xl)', paddingBottom: 'var(--space-xxl)' }}>
+      {/* Breadcrumb + Title */}
+      <div style={{ marginBottom: 'var(--space-lg)' }}>
+        <p className="t-caption" style={{ marginBottom: 'var(--space-xs)' }}>
+          <Link to="/cart">Basket</Link> / Safe checkout
+        </p>
+        <h1 className="t-display-lg">Checkout &amp; delivery</h1>
+      </div>
+
+      {/* Step indicator */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--space-xs)',
+          maxWidth: '520px',
+          marginBottom: 'var(--space-xl)'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)' }}>
+          <span className="step-dot is-done" aria-hidden="true">
+            <CheckCircle2 size={13} />
+          </span>
+          <span className="t-caption">Basket</span>
         </div>
+        <span className="step-line is-done" aria-hidden="true" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)' }}>
+          <span className="step-dot is-active" aria-hidden="true">
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px' }}>2</span>
+          </span>
+          <span className="t-caption">Checkout</span>
+        </div>
+        <span className="step-line" aria-hidden="true" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)' }}>
+          <span className="step-dot" aria-hidden="true">
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px' }}>3</span>
+          </span>
+          <span className="t-caption">Confirmation</span>
+        </div>
+      </div>
 
-        {errorMessage && (
-          <div
-            style={{
-              backgroundColor: 'var(--color-error-bg)',
-              color: 'var(--color-error)',
-              padding: '1rem 1.25rem',
-              borderRadius: 'var(--radius-md)',
-              marginBottom: '2rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              border: '1px solid #F5C6CB'
-            }}
-          >
-            <AlertCircle size={20} />
-            <span>{errorMessage}</span>
-          </div>
-        )}
+      {errorMessage && (
+        <div className="error-surface" role="alert" style={{ marginBottom: 'var(--space-lg)' }}>
+          <AlertCircle size={18} aria-hidden="true" />
+          <span>{errorMessage}</span>
+        </div>
+      )}
 
-        <form onSubmit={handlePlaceOrder}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-              gap: '2.5rem',
-              alignItems: 'start'
-            }}
-          >
-            {/* Left: Shipping Address + Payment Options */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              {/* Shipping Address Box */}
+      <form onSubmit={handlePlaceOrder}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 420px), 1fr))',
+            gap: 'var(--space-xl)',
+            alignItems: 'start'
+          }}
+        >
+          {/* Left: Shipping Address + Payment Options */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
+            {/* Shipping Address */}
+            <section className="card" style={{ padding: 'var(--space-lg)' }}>
               <div
                 style={{
-                  backgroundColor: '#fff',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '2rem',
-                  boxShadow: 'var(--shadow-subtle)'
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-xs)',
+                  marginBottom: 'var(--space-lg)',
+                  borderBottom: '1px solid var(--color-hairline-soft)',
+                  paddingBottom: 'var(--space-md)'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '0.75rem' }}>
-                  <Truck size={20} color="var(--color-forest-green)" />
-                  <h3 style={{ fontSize: '1.25rem', margin: 0 }}>Delivery Address (India)</h3>
+                <Truck size={18} aria-hidden="true" />
+                <h2 className="t-headline">Delivery address (India)</h2>
+              </div>
+
+              <div className="grid-2">
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label className="form-label" htmlFor="co-fullname">Full name *</label>
+                  <input
+                    id="co-fullname"
+                    type="text"
+                    name="fullName"
+                    value={address.fullName}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="Receiver's full name"
+                    required
+                  />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                    <label className="form-label">Full Name *</label>
-                    <input
-                      type="text"
-                      name="fullName"
-                      value={address.fullName}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="Receiver's full name"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                    <label className="form-label">Phone Number *</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={address.phone}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="Mobile number for courier tracking"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                    <label className="form-label">Street Address & Flat / House No. *</label>
-                    <input
-                      type="text"
-                      name="street"
-                      value={address.street}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="Building, street name, locality"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">City *</label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={address.city}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="City / Town"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">State *</label>
-                    <input
-                      type="text"
-                      name="state"
-                      value={address.state}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="State"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">PIN / Postal Code *</label>
-                    <input
-                      type="text"
-                      name="postalCode"
-                      value={address.postalCode}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="6-digit PIN code"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Country</label>
-                    <input
-                      type="text"
-                      name="country"
-                      value={address.country}
-                      readOnly
-                      className="form-input"
-                      style={{ backgroundColor: 'var(--color-cream-light)' }}
-                    />
-                  </div>
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label className="form-label" htmlFor="co-phone">Phone number *</label>
+                  <input
+                    id="co-phone"
+                    type="tel"
+                    name="phone"
+                    value={address.phone}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="Mobile number for courier tracking"
+                    required
+                  />
                 </div>
 
-                {/* Customization notes */}
-                <div className="form-group" style={{ marginTop: '0.5rem' }}>
-                  <label className="form-label">
-                    Artisan Customization Note / Gift Message (Optional)
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    className="form-textarea"
-                    placeholder="e.g. Please inscribe 'Ananya & Kabir 2026' or attach a birthday gift note."
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label className="form-label" htmlFor="co-street">Street address &amp; flat / house no. *</label>
+                  <input
+                    id="co-street"
+                    type="text"
+                    name="street"
+                    value={address.street}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="Building, street name, locality"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" htmlFor="co-city">City *</label>
+                  <input
+                    id="co-city"
+                    type="text"
+                    name="city"
+                    value={address.city}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="City / town"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" htmlFor="co-state">State *</label>
+                  <input
+                    id="co-state"
+                    type="text"
+                    name="state"
+                    value={address.state}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="State"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" htmlFor="co-postal">PIN / postal code *</label>
+                  <input
+                    id="co-postal"
+                    type="text"
+                    name="postalCode"
+                    value={address.postalCode}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="6-digit PIN code"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" htmlFor="co-country">Country</label>
+                  <input
+                    id="co-country"
+                    type="text"
+                    name="country"
+                    value={address.country}
+                    readOnly
+                    className="form-input"
+                    style={{ backgroundColor: 'var(--color-surface-soft)' }}
                   />
                 </div>
               </div>
 
-              {/* Payment Method Selector */}
+              {/* Customization notes */}
+              <div className="form-group" style={{ marginTop: 'var(--space-xs)' }}>
+                <label className="form-label" htmlFor="co-notes">Artisan customization note / gift message (optional)</label>
+                <textarea
+                  id="co-notes"
+                  rows={2}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="form-textarea"
+                  placeholder="e.g. Please inscribe 'Ananya & Kabir 2026' or attach a birthday gift note."
+                />
+              </div>
+            </section>
+
+            {/* Payment Method Selector */}
+            <section className="card" style={{ padding: 'var(--space-lg)' }}>
               <div
                 style={{
-                  backgroundColor: '#fff',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '2rem',
-                  boxShadow: 'var(--shadow-subtle)'
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-xs)',
+                  marginBottom: 'var(--space-md)',
+                  borderBottom: '1px solid var(--color-hairline-soft)',
+                  paddingBottom: 'var(--space-md)'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '0.75rem' }}>
-                  <Lock size={20} color="var(--color-forest-green)" />
-                  <h3 style={{ fontSize: '1.25rem', margin: 0 }}>Payment Method</h3>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-                  {/* Test Card */}
-                  <label
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '1rem',
-                      border: '2px solid',
-                      borderColor: paymentMethod === 'TestCard' ? 'var(--color-forest-green)' : 'var(--color-border)',
-                      borderRadius: 'var(--radius-md)',
-                      backgroundColor: paymentMethod === 'TestCard' ? 'var(--color-forest-subtle)' : '#fff',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="TestCard"
-                      checked={paymentMethod === 'TestCard'}
-                      onChange={() => setPaymentMethod('TestCard')}
-                    />
-                    <CreditCard size={20} color="var(--color-forest-green)" />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: '700', fontSize: '0.92rem' }}>
-                        Instant Card Payment (Safe Sandbox Test Mode)
-                      </div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
-                        Simulates verified payment gateway without real charges.
-                      </div>
-                    </div>
-                    <span className="badge badge-forest" style={{ fontSize: '0.68rem' }}>Instant</span>
-                  </label>
-
-                  {/* UPI Simulation */}
-                  <label
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '1rem',
-                      border: '2px solid',
-                      borderColor: paymentMethod === 'UPI' ? 'var(--color-forest-green)' : 'var(--color-border)',
-                      borderRadius: 'var(--radius-md)',
-                      backgroundColor: paymentMethod === 'UPI' ? 'var(--color-forest-subtle)' : '#fff',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="UPI"
-                      checked={paymentMethod === 'UPI'}
-                      onChange={() => setPaymentMethod('UPI')}
-                    />
-                    <Smartphone size={20} color="var(--color-forest-green)" />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: '700', fontSize: '0.92rem' }}>
-                        UPI Simulation (Google Pay / PhonePe / Paytm / BHIM)
-                      </div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
-                        Instant QR / VPA sandbox simulation.
-                      </div>
-                    </div>
-                  </label>
-
-                  {/* Cash on Delivery */}
-                  <label
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '1rem',
-                      border: '2px solid',
-                      borderColor: paymentMethod === 'COD' ? 'var(--color-forest-green)' : 'var(--color-border)',
-                      borderRadius: 'var(--radius-md)',
-                      backgroundColor: paymentMethod === 'COD' ? 'var(--color-forest-subtle)' : '#fff',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="COD"
-                      checked={paymentMethod === 'COD'}
-                      onChange={() => setPaymentMethod('COD')}
-                    />
-                    <Truck size={20} color="var(--color-forest-green)" />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: '700', fontSize: '0.92rem' }}>
-                        Cash on Delivery (COD)
-                      </div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
-                        Pay cash upon arrival of your handmade parcel.
-                      </div>
-                    </div>
-                  </label>
-                </div>
+                <Lock size={18} aria-hidden="true" />
+                <h2 className="t-headline">Payment method</h2>
               </div>
-            </div>
 
-            {/* Right: Order Summary Preview & Button */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
+                {paymentOptions.map((option) => {
+                  const isSelected = paymentMethod === option.value;
+                  return (
+                    <label
+                      key={option.value}
+                      className="card"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--space-sm)',
+                        padding: 'var(--space-md)',
+                        borderRadius: 'var(--radius-md)',
+                        borderColor: isSelected ? 'var(--color-primary)' : 'var(--color-hairline)',
+                        cursor: 'pointer',
+                        transition: 'border-color var(--transition-fast)'
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value={option.value}
+                        checked={isSelected}
+                        onChange={() => setPaymentMethod(option.value)}
+                      />
+                      {option.icon}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div className="t-body-sm w540">{option.title}</div>
+                        <div className="form-hint">{option.hint}</div>
+                      </div>
+                      {isSelected ? (
+                        <span className="badge badge-selected">Selected</span>
+                      ) : (
+                        option.badge && <span className="badge badge-neutral">{option.badge}</span>
+                      )}
+                    </label>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
+
+          {/* Right: Order Summary Preview & Button */}
+          <aside className="card" style={{ padding: 'var(--space-lg)', position: 'sticky', top: '96px' }}>
+            <h2 className="t-headline" style={{ marginBottom: 'var(--space-md)' }}>
+              Items in order ({cart.items.length})
+            </h2>
+
+            {/* Items Mini List */}
             <div
               style={{
-                backgroundColor: '#fff',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-lg)',
-                padding: '2rem',
-                boxShadow: 'var(--shadow-card)',
-                position: 'sticky',
-                top: '100px'
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 'var(--space-sm)',
+                maxHeight: '240px',
+                overflowY: 'auto',
+                marginBottom: 'var(--space-md)'
               }}
             >
-              <h3 style={{ fontSize: '1.3rem', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '0.75rem' }}>
-                Items in Order ({cart.items.length})
-              </h3>
-
-              {/* Items Mini List */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', maxHeight: '240px', overflowY: 'auto', marginBottom: '1.5rem', paddingRight: '4px' }}>
-                {cart.items.map((it) => (
-                  <div key={it._id || it.productId} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {cart.items.map((it) => (
+                <div key={it._id || it.productId} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)' }}>
+                  <span className="img-frame" style={{ width: '48px', height: '48px', flexShrink: 0 }}>
                     <img
                       src={it.images?.[0] || 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=400&q=80'}
                       alt={it.name}
-                      style={{ width: '45px', height: '45px', borderRadius: '6px', objectFit: 'cover' }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
-                    <div style={{ flex: 1, fontSize: '0.85rem' }}>
-                      <div style={{ fontWeight: '600', color: 'var(--color-dark-text)' }}>{it.name}</div>
-                      <div style={{ color: 'var(--color-text-muted)' }}>Qty: {it.quantity}</div>
-                    </div>
-                    <div style={{ fontWeight: '700', fontSize: '0.9rem' }}>
-                      ₹{(it.price * it.quantity).toLocaleString('en-IN')}
-                    </div>
+                  </span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="t-body-sm w540">{it.name}</div>
+                    <div className="t-caption">Qty {it.quantity}</div>
                   </div>
-                ))}
-              </div>
+                  <span className="t-body-sm w540">₹{(it.price * it.quantity).toLocaleString('en-IN')}</span>
+                </div>
+              ))}
+            </div>
 
-              {/* Breakdown */}
-              <div style={{ borderTop: '1px solid var(--color-border-subtle)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem', fontSize: '0.92rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-text-muted)' }}>
-                  <span>Subtotal</span>
-                  <span style={{ color: 'var(--color-dark-text)', fontWeight: '600' }}>₹{cart.subtotal.toLocaleString('en-IN')}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-text-muted)' }}>
-                  <span>Shipping</span>
-                  <span style={{ color: cart.shippingFee === 0 ? 'var(--color-success)' : 'var(--color-dark-text)', fontWeight: '600' }}>
-                    {cart.shippingFee === 0 ? 'FREE' : `₹${cart.shippingFee}`}
-                  </span>
-                </div>
-                <div style={{ borderTop: '1px solid var(--color-border-subtle)', paddingTop: '0.85rem', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <span style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--color-forest-green)' }}>Total to Pay</span>
-                  <span style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--color-forest-green)' }}>
-                    ₹{cart.total.toLocaleString('en-IN')}
-                  </span>
-                </div>
+            {/* Breakdown */}
+            <div
+              style={{
+                borderTop: '1px solid var(--color-hairline-soft)',
+                paddingTop: 'var(--space-md)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 'var(--space-sm)',
+                marginBottom: 'var(--space-lg)'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span className="t-body-sm">Subtotal</span>
+                <span className="t-body-sm w540">₹{cart.subtotal.toLocaleString('en-IN')}</span>
               </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="btn btn-secondary btn-lg"
-                style={{ width: '100%', marginBottom: '1rem' }}
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span className="t-body-sm">Shipping</span>
+                <span className="t-body-sm w540">
+                  {cart.shippingFee === 0 ? 'Free' : `₹${cart.shippingFee.toLocaleString('en-IN')}`}
+                </span>
+              </div>
+              <div
+                style={{
+                  borderTop: '1px solid var(--color-hairline)',
+                  paddingTop: 'var(--space-md)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline'
+                }}
               >
-                <span>{isSubmitting ? 'Verifying & Placing Order...' : 'Confirm & Place Order'}</span>
-                <ArrowRight size={18} />
-              </button>
-
-              <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', textAlign: 'center' }}>
-                By placing this order, you support independent Indian craft makers directly.
+                <span className="t-body w540">Total to pay</span>
+                <span className="t-card-title">₹{cart.total.toLocaleString('en-IN')}</span>
               </div>
             </div>
-          </div>
-        </form>
-      </div>
+
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-xxs)',
+                marginBottom: 'var(--space-md)'
+              }}
+            >
+              <ShieldCheck size={16} aria-hidden="true" />
+              <span className="t-caption">Secure server-backed checkout</span>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="btn btn-primary btn-lg"
+              style={{ width: '100%', marginBottom: 'var(--space-sm)' }}
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="spinner spinner-sm" aria-hidden="true" />
+                  <span>Placing order…</span>
+                </>
+              ) : (
+                <>
+                  <span>Confirm &amp; place order</span>
+                  <ArrowRight size={18} aria-hidden="true" />
+                </>
+              )}
+            </button>
+
+            <p style={{ fontSize: '13px', fontWeight: 330, textAlign: 'center' }}>
+              By placing this order, you support independent Indian craft makers directly.
+            </p>
+          </aside>
+        </div>
+      </form>
     </div>
   );
 };

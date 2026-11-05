@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  TrendingUp,
-  Store,
-  Users,
-  Package,
-  ShoppingBag,
-  IndianRupee,
-  Clock,
-  ShieldCheck,
-  Save,
-  CheckCircle2
-} from 'lucide-react';
+import { Save } from 'lucide-react';
 import api from '../../api/client';
 import { useToast } from '../../context/ToastContext';
 
@@ -61,8 +50,8 @@ const AdminDashboardPage = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: '4rem 0', textAlign: 'center' }}>
-        <p>Loading marketplace analytics...</p>
+      <div className="page-loading">
+        <div className="spinner" />
       </div>
     );
   }
@@ -71,125 +60,106 @@ const AdminDashboardPage = () => {
   const recentOrders = data?.recentOrders || [];
   const recentUsers = data?.recentUsers || [];
 
+  const orderStatusBadge = (status) =>
+    status === 'Delivered' ? 'badge-success' : status === 'Cancelled' ? 'badge-error' : 'badge-cream';
+
+  const roleBadge = (role) =>
+    role === 'admin' ? 'badge-navy' : role === 'seller' ? 'badge-mint' : 'badge-cream';
+
   return (
-    <div>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', margin: 0, color: 'var(--color-forest-green)' }}>
-          Marketplace Control Center
-        </h1>
-        <p style={{ color: 'var(--color-text-muted)', margin: '4px 0 0 0' }}>
-          Platform metrics, seller approvals, revenue, and policy configuration
-        </p>
+    <div className="page-stack" style={{ gap: 'var(--space-xl)' }}>
+      {/* Page header */}
+      <div className="toolbar">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xxs)' }}>
+          <span className="t-caption">Admin console</span>
+          <h1 className="t-headline" style={{ margin: 0 }}>
+            Marketplace Control Center
+          </h1>
+          <p className="t-body-sm w330" style={{ margin: 0 }}>
+            Platform metrics, seller approvals, revenue, and policy configuration
+          </p>
+        </div>
       </div>
 
-      {/* Top Metric Cards */}
+      {/* KPI cards */}
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
-          gap: '1.25rem',
-          marginBottom: '2rem'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))',
+          gap: 'var(--space-md)'
         }}
       >
-        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
-              Platform GMV
-            </span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--color-forest-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-forest-green)' }}>
-              <TrendingUp size={18} />
-            </div>
-          </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-forest-green)', margin: '8px 0 2px 0' }}>
+        <div className="stat-card">
+          <span className="stat-label">Platform GMV</span>
+          <div className="stat-value w540">
             ₹{stats.totalPlatformRevenue?.toLocaleString('en-IN') || 0}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Gross merchandise value</div>
+          <span className="stat-sub">Gross merchandise value</span>
         </div>
 
-        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
-              Commission Earned
-            </span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--color-terracotta-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-terracotta)' }}>
-              <IndianRupee size={18} />
-            </div>
-          </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-terracotta)', margin: '8px 0 2px 0' }}>
+        <div className="stat-card">
+          <span className="stat-label">Commission Earned</span>
+          <div className="stat-value w540">
             ₹{stats.totalCommissionEarned?.toLocaleString('en-IN') || 0}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>At {stats.commissionPercent}% platform cut</div>
+          <span className="stat-sub">At {stats.commissionPercent}% platform cut</span>
         </div>
 
-        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
-              Makers & Sellers
-            </span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--color-cream-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-forest-green)' }}>
-              <Store size={18} />
-            </div>
-          </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-dark-text)', margin: '8px 0 2px 0' }}>
-            {stats.totalSellers || 0}
-          </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-            {stats.pendingSellersCount ? `${stats.pendingSellersCount} pending approvals` : 'All accounts approved'}
-          </div>
+        <div className="stat-card">
+          <span className="stat-label">Makers &amp; Sellers</span>
+          <div className="stat-value w540">{stats.totalSellers || 0}</div>
+          <span className="stat-sub">
+            {stats.pendingSellersCount
+              ? `${stats.pendingSellersCount} pending approvals`
+              : 'All accounts approved'}
+          </span>
         </div>
 
-        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
-              Marketplace Orders
-            </span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--color-forest-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-forest-green)' }}>
-              <ShoppingBag size={18} />
-            </div>
-          </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-dark-text)', margin: '8px 0 2px 0' }}>
-            {stats.totalOrders || 0}
-          </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-            Across {stats.totalUsers || 0} registered members
-          </div>
+        <div className="stat-card">
+          <span className="stat-label">Marketplace Orders</span>
+          <div className="stat-value w540">{stats.totalOrders || 0}</div>
+          <span className="stat-sub">Across {stats.totalUsers || 0} registered members</span>
         </div>
       </div>
 
-      {/* Commission Configuration Box */}
-      <div
-        className="card"
-        style={{
-          backgroundColor: '#fff',
-          borderRadius: 'var(--radius-lg)',
-          padding: '1.75rem',
-          marginBottom: '2rem'
-        }}
-      >
-        <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem', color: 'var(--color-forest-green)' }}>
-          Marketplace Commission Configuration
-        </h3>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.88rem', marginBottom: '1.25rem' }}>
-          Configure the percentage commission deducted automatically on seller orders to maintain platform operations.
+      {/* Commission configuration */}
+      <div className="card" style={{ padding: 'var(--space-lg)' }}>
+        <h3 className="t-card-title">Marketplace Commission Configuration</h3>
+        <p className="t-body-sm w330" style={{ marginTop: 'var(--space-xxs)' }}>
+          Configure the percentage commission deducted automatically on seller orders to maintain
+          platform operations.
         </p>
 
-        <form onSubmit={handleSaveCommission} style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontSize: '0.9rem', fontWeight: '700' }}>Platform Commission (%):</label>
+        <form
+          onSubmit={handleSaveCommission}
+          className="toolbar"
+          style={{ marginTop: 'var(--space-md)' }}
+        >
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label" htmlFor="commission-rate">
+              Platform Commission (%)
+            </label>
             <input
+              id="commission-rate"
               type="number"
               min="0"
               max="50"
               value={commissionRate}
               onChange={(e) => setCommissionRate(e.target.value)}
               className="form-input"
-              style={{ width: '100px', fontWeight: '700' }}
+              style={{ width: '120px' }}
               required
             />
           </div>
 
-          <button type="submit" disabled={savingSettings} className="btn btn-sm btn-primary">
-            <Save size={15} />
+          <button
+            type="submit"
+            disabled={savingSettings}
+            className="btn btn-sm btn-primary"
+            style={{ alignSelf: 'flex-end' }}
+          >
+            {savingSettings && <div className="spinner-sm" />}
+            <Save size={15} aria-hidden="true" />
             <span>{savingSettings ? 'Updating...' : 'Update Commission Rate'}</span>
           </button>
         </form>
@@ -199,90 +169,125 @@ const AdminDashboardPage = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '1.75rem'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+          gap: 'var(--space-lg)'
         }}
       >
         {/* Recent Orders */}
-        <div className="card" style={{ backgroundColor: '#fff', padding: '1.75rem', borderRadius: 'var(--radius-lg)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <h3 style={{ fontSize: '1.15rem', margin: 0 }}>Recent Orders</h3>
-            <Link to="/admin/orders" style={{ fontSize: '0.82rem', color: 'var(--color-forest-green)', fontWeight: '700' }}>
+        <div className="card">
+          <div
+            style={{
+              padding: 'var(--space-md) var(--space-lg)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: '1px solid var(--color-hairline)'
+            }}
+          >
+            <h3 className="t-card-title">Recent Orders</h3>
+            <Link to="/admin/orders" className="btn btn-ghost btn-sm">
               View All
             </Link>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {recentOrders.map((ord) => (
-              <div
-                key={ord._id}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '10px 12px',
-                  backgroundColor: 'var(--color-cream-light)',
-                  borderRadius: 'var(--radius-md)',
-                  fontSize: '0.85rem'
-                }}
-              >
-                <div>
-                  <div style={{ fontWeight: '700', color: 'var(--color-forest-green)' }}>
-                    #{ord.orderNumber}
+          <div
+            style={{
+              padding: 'var(--space-md) var(--space-lg) var(--space-lg)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-xs)'
+            }}
+          >
+            {recentOrders.length === 0 ? (
+              <p className="t-body-sm w330" style={{ margin: 0 }}>
+                No recent marketplace orders yet.
+              </p>
+            ) : (
+              recentOrders.map((ord) => (
+                <div
+                  key={ord._id}
+                  className="tile"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px var(--space-md)'
+                  }}
+                >
+                  <div>
+                    <div className="t-body-sm w480">#{ord.orderNumber}</div>
+                    <div className="t-caption" style={{ marginTop: 'var(--space-xxs)' }}>
+                      {ord.buyerId?.name || 'Customer'} • ₹{ord.total.toLocaleString('en-IN')}
+                    </div>
                   </div>
-                  <div style={{ color: 'var(--color-text-muted)', fontSize: '0.78rem' }}>
-                    {ord.buyerId?.name || 'Customer'} • ₹{ord.total.toLocaleString('en-IN')}
-                  </div>
+                  <span className={`badge ${orderStatusBadge(ord.orderStatus)}`}>
+                    {ord.orderStatus}
+                  </span>
                 </div>
-                <span className="badge badge-forest" style={{ fontSize: '0.7rem' }}>
-                  {ord.orderStatus}
-                </span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
         {/* Recent Registered Users */}
-        <div className="card" style={{ backgroundColor: '#fff', padding: '1.75rem', borderRadius: 'var(--radius-lg)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <h3 style={{ fontSize: '1.15rem', margin: 0 }}>Registered Users</h3>
-            <Link to="/admin/users" style={{ fontSize: '0.82rem', color: 'var(--color-forest-green)', fontWeight: '700' }}>
+        <div className="card">
+          <div
+            style={{
+              padding: 'var(--space-md) var(--space-lg)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: '1px solid var(--color-hairline)'
+            }}
+          >
+            <h3 className="t-card-title">Registered Users</h3>
+            <Link to="/admin/users" className="btn btn-ghost btn-sm">
               Manage Directory
             </Link>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {recentUsers.map((u) => (
-              <div
-                key={u._id}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '10px 12px',
-                  backgroundColor: 'var(--color-cream-light)',
-                  borderRadius: 'var(--radius-md)',
-                  fontSize: '0.85rem'
-                }}
-              >
-                <div>
-                  <div style={{ fontWeight: '700', color: 'var(--color-dark-text)' }}>{u.name}</div>
-                  <div style={{ color: 'var(--color-text-muted)', fontSize: '0.78rem' }}>{u.email}</div>
-                </div>
-                <span
-                  className={`badge ${
-                    u.role === 'admin'
-                      ? 'badge-terracotta'
-                      : u.role === 'seller'
-                      ? 'badge-forest'
-                      : 'badge-cream'
-                  }`}
-                  style={{ fontSize: '0.7rem' }}
+          <div
+            style={{
+              padding: 'var(--space-md) var(--space-lg) var(--space-lg)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-xs)'
+            }}
+          >
+            {recentUsers.length === 0 ? (
+              <p className="t-body-sm w330" style={{ margin: 0 }}>
+                No recently registered users.
+              </p>
+            ) : (
+              recentUsers.map((u) => (
+                <div
+                  key={u._id}
+                  className="tile"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px var(--space-md)'
+                  }}
                 >
-                  {u.role}
-                </span>
-              </div>
-            ))}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span
+                      className="avatar avatar-lilac"
+                      style={{ width: '32px', height: '32px', fontSize: '13px' }}
+                    >
+                      {u.name ? u.name[0] : 'U'}
+                    </span>
+                    <div>
+                      <div className="t-body-sm w480">{u.name}</div>
+                      <div className="t-caption" style={{ marginTop: 'var(--space-xxs)' }}>
+                        {u.email}
+                      </div>
+                    </div>
+                  </div>
+                  <span className={`badge ${roleBadge(u.role)}`}>{u.role}</span>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

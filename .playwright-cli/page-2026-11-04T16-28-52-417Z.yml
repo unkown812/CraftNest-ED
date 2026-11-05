@@ -1,0 +1,120 @@
+- generic [ref=f25e2]:
+  - banner [ref=f25e3]:
+    - generic [ref=f25e4]:
+      - link "CraftNest home" [ref=f25e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f25e6]: CraftNest
+      - generic [ref=f25e10]:
+        - link "Wishlist" [ref=f25e11] [cursor=pointer]:
+          - /url: /buyer/wishlist
+        - link "Shopping cart" [ref=f25e14] [cursor=pointer]:
+          - /url: /cart
+        - button "Open navigation menu" [ref=f25e18] [cursor=pointer]
+  - generic [ref=f25e21]:
+    - text: Handmade with heart · Free shipping across India on orders above ₹999 ·
+    - link "Explore crafts" [ref=f25e22] [cursor=pointer]:
+      - /url: /shop
+  - main [ref=f25e23]:
+    - generic [ref=f25e25]:
+      - generic [ref=f25e26]:
+        - generic [ref=f25e27]: CraftNest
+        - paragraph [ref=f25e31]: CraftNest · Artisan Marketplace
+        - heading "Join CraftNest" [level=1] [ref=f25e32]
+        - paragraph [ref=f25e33]: Connect with independent artisans and conscious buyers across India
+      - generic [ref=f25e34]:
+        - button "I want to shop" [ref=f25e35] [cursor=pointer]
+        - button "I make / sell" [ref=f25e40] [cursor=pointer]
+      - generic [ref=f25e46]:
+        - generic [ref=f25e47]:
+          - generic [ref=f25e48]: Full Name *
+          - textbox "Full Name *" [ref=f25e49]:
+            - /placeholder: e.g. Priya Sundaram
+        - generic [ref=f25e50]:
+          - generic [ref=f25e51]: Email Address *
+          - textbox "Email Address *" [ref=f25e52]:
+            - /placeholder: name@example.com
+        - generic [ref=f25e53]:
+          - generic [ref=f25e54]: Password * (min 6 characters)
+          - textbox "Password * (min 6 characters)" [ref=f25e55]:
+            - /placeholder: ••••••••
+        - generic [ref=f25e56]:
+          - generic [ref=f25e57]: Mobile Number
+          - textbox "Mobile Number" [ref=f25e58]:
+            - /placeholder: +91…
+        - button "Complete registration" [ref=f25e59] [cursor=pointer]
+        - generic [ref=f25e63]:
+          - text: Already have an account?
+          - link "Sign in here" [ref=f25e64] [cursor=pointer]:
+            - /url: /login
+  - contentinfo [ref=f25e65]:
+    - generic [ref=f25e66]:
+      - generic [ref=f25e67]:
+        - generic [ref=f25e68]: CraftNest
+        - paragraph [ref=f25e69]: CraftNest connects home-based creators and independent artisans with conscious shoppers looking for one-of-a-kind handmade treasures.
+        - link "support@craftnest.in" [ref=f25e70] [cursor=pointer]:
+          - /url: mailto:support@craftnest.in
+        - generic [ref=f25e74]: Mumbai, Maharashtra, India
+      - generic [ref=f25e78]:
+        - navigation "Categories" [ref=f25e79]:
+          - list [ref=f25e81]:
+            - listitem [ref=f25e82]:
+              - link "Handmade Candles" [ref=f25e83] [cursor=pointer]:
+                - /url: /shop?category=Handmade%20Candles
+            - listitem [ref=f25e84]:
+              - link "Artisanal Jewellery" [ref=f25e85] [cursor=pointer]:
+                - /url: /shop?category=Jewellery
+            - listitem [ref=f25e86]:
+              - link "Crochet & Knitting" [ref=f25e87] [cursor=pointer]:
+                - /url: /shop?category=Crochet%20and%20Knitting
+            - listitem [ref=f25e88]:
+              - link "Pottery & Home Décor" [ref=f25e89] [cursor=pointer]:
+                - /url: /shop?category=Home%20D%C3%A9cor
+            - listitem [ref=f25e90]:
+              - link "Paintings & Art" [ref=f25e91] [cursor=pointer]:
+                - /url: /shop?category=Paintings%20and%20Art
+            - listitem [ref=f25e92]:
+              - link "Curated Gift Hampers" [ref=f25e93] [cursor=pointer]:
+                - /url: /shop?category=Gift%20Hampers
+        - navigation "Customer care" [ref=f25e94]:
+          - generic [ref=f25e95]: Customer Care
+          - list [ref=f25e96]:
+            - listitem [ref=f25e97]:
+              - link "About CraftNest" [ref=f25e98] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=f25e99]:
+              - link "Become a Seller" [ref=f25e100] [cursor=pointer]:
+                - /url: /become-seller
+            - listitem [ref=f25e101]:
+              - link "Shipping & Delivery Policy" [ref=f25e102] [cursor=pointer]:
+                - /url: /shipping-policy
+            - listitem [ref=f25e103]:
+              - link "Returns & Cancellations" [ref=f25e104] [cursor=pointer]:
+                - /url: /returns-policy
+            - listitem [ref=f25e105]:
+              - link "Privacy & Data Policy" [ref=f25e106] [cursor=pointer]:
+                - /url: /privacy-policy
+            - listitem [ref=f25e107]:
+              - link "Contact Artisan Support" [ref=f25e108] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f25e109]:
+          - generic [ref=f25e110]: CraftNest Stories
+          - paragraph [ref=f25e111]: Receive stories from independent makers, secret artisan discounts, and new collection launches.
+          - generic [ref=f25e112]:
+            - generic [ref=f25e113]:
+              - textbox "Email address for newsletter" [ref=f25e114]:
+                - /placeholder: Your email address
+              - button "Subscribe to newsletter" [ref=f25e115] [cursor=pointer]
+            - generic [ref=f25e119] [cursor=pointer]:
+              - checkbox "I agree to receive handmade inspiration and accept the privacy policy." [ref=f25e120]
+              - generic [ref=f25e121]: I agree to receive handmade inspiration and accept the privacy policy.
+      - separator [ref=f25e122]
+      - generic [ref=f25e123]:
+        - generic [ref=f25e124]: © 2026 CraftNest · Handmade with heart · All rights reserved
+        - generic [ref=f25e127]:
+          - link "Privacy" [ref=f25e128] [cursor=pointer]:
+            - /url: /privacy-policy
+          - link "Terms" [ref=f25e129] [cursor=pointer]:
+            - /url: /returns-policy
+          - link "Shipping" [ref=f25e130] [cursor=pointer]:
+            - /url: /shipping-policy
+  - status

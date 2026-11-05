@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+// Use the backend URL from the environment in production (Vercel),
+// falling back to the local development server.
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: `${baseURL}/api/v1`,
   headers: {
     'Content-Type': 'application/json'
   }

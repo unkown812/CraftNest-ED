@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const API_BASE = 'http://localhost:5000/api/v1';
+const API_BASE = process.env.API_BASE || 'http://localhost:5000/api/v1';
 
 async function testSuite() {
   console.log('----------------------------------------------------');

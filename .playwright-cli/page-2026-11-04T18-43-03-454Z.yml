@@ -1,0 +1,125 @@
+- generic [ref=f9e2]:
+  - banner [ref=f9e3]:
+    - generic [ref=f9e4]:
+      - link "CraftNest home" [ref=f9e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f9e6]: CraftNest
+      - textbox "Search products" [ref=f9e11]:
+        - /placeholder: Search candles, pottery, crochet…
+      - navigation "Primary" [ref=f9e12]:
+        - generic [ref=f9e13]:
+          - link "Shop All" [ref=f9e14] [cursor=pointer]:
+            - /url: /shop
+          - link "Candles" [ref=f9e15] [cursor=pointer]:
+            - /url: /shop?category=Handmade%20Candles
+          - link "Crochet" [ref=f9e16] [cursor=pointer]:
+            - /url: /shop?category=Crochet%20and%20Knitting
+          - link "Sell on CraftNest" [ref=f9e17] [cursor=pointer]:
+            - /url: /become-seller
+      - generic [ref=f9e23]:
+        - link "Wishlist" [ref=f9e24] [cursor=pointer]:
+          - /url: /buyer/wishlist
+        - link "Shopping cart" [ref=f9e27] [cursor=pointer]:
+          - /url: /cart
+        - generic [ref=f9e31]:
+          - link "Log In" [ref=f9e32] [cursor=pointer]:
+            - /url: /login
+          - link "Join" [ref=f9e33] [cursor=pointer]:
+            - /url: /register
+  - generic [ref=f9e35]:
+    - text: Handmade with heart · Free shipping across India on orders above ₹999 ·
+    - link "Explore crafts" [ref=f9e36] [cursor=pointer]:
+      - /url: /shop
+  - main [ref=f9e37]:
+    - generic [ref=f9e40]:
+      - generic [ref=f9e41]: Buyer support
+      - heading "Returns & Replacement Policy" [level=1] [ref=f9e42]
+      - generic [ref=f9e43]:
+        - generic [ref=f9e44]: Artisan guarantee
+        - paragraph [ref=f9e45]:
+          - strong [ref=f9e46]: "Artisan Guarantee:"
+          - text: If a handmade item arrives broken, defective, or incorrect, please notify us within
+          - strong [ref=f9e47]: 7 days
+          - text: of delivery with a photograph to receive an immediate free replacement or refund.
+      - generic [ref=f9e48]:
+        - generic [ref=f9e49]: Personalized products
+        - paragraph [ref=f9e50]:
+          - strong [ref=f9e51]: "Personalized Products:"
+          - text: Custom items with engraved names or made-to-order dimensions cannot be returned unless damaged during transit.
+      - generic [ref=f9e52]:
+        - generic [ref=f9e53]: Cancellations
+        - paragraph [ref=f9e54]:
+          - strong [ref=f9e55]: "Cancellations:"
+          - text: Orders can be cancelled from your Buyer Dashboard at any time before the artisan has marked the order as Shipped.
+  - contentinfo [ref=f9e56]:
+    - generic [ref=f9e57]:
+      - generic [ref=f9e58]:
+        - generic [ref=f9e59]: CraftNest
+        - paragraph [ref=f9e60]: CraftNest connects home-based creators and independent artisans with conscious shoppers looking for one-of-a-kind handmade treasures.
+        - link "support@craftnest.in" [ref=f9e61] [cursor=pointer]:
+          - /url: mailto:support@craftnest.in
+        - generic [ref=f9e65]: Mumbai, Maharashtra, India
+      - generic [ref=f9e69]:
+        - navigation "Categories" [ref=f9e70]:
+          - list [ref=f9e72]:
+            - listitem [ref=f9e73]:
+              - link "Handmade Candles" [ref=f9e74] [cursor=pointer]:
+                - /url: /shop?category=Handmade%20Candles
+            - listitem [ref=f9e75]:
+              - link "Artisanal Jewellery" [ref=f9e76] [cursor=pointer]:
+                - /url: /shop?category=Jewellery
+            - listitem [ref=f9e77]:
+              - link "Crochet & Knitting" [ref=f9e78] [cursor=pointer]:
+                - /url: /shop?category=Crochet%20and%20Knitting
+            - listitem [ref=f9e79]:
+              - link "Pottery & Home Décor" [ref=f9e80] [cursor=pointer]:
+                - /url: /shop?category=Home%20D%C3%A9cor
+            - listitem [ref=f9e81]:
+              - link "Paintings & Art" [ref=f9e82] [cursor=pointer]:
+                - /url: /shop?category=Paintings%20and%20Art
+            - listitem [ref=f9e83]:
+              - link "Curated Gift Hampers" [ref=f9e84] [cursor=pointer]:
+                - /url: /shop?category=Gift%20Hampers
+        - navigation "Customer care" [ref=f9e85]:
+          - generic [ref=f9e86]: Customer Care
+          - list [ref=f9e87]:
+            - listitem [ref=f9e88]:
+              - link "About CraftNest" [ref=f9e89] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=f9e90]:
+              - link "Become a Seller" [ref=f9e91] [cursor=pointer]:
+                - /url: /become-seller
+            - listitem [ref=f9e92]:
+              - link "Shipping & Delivery Policy" [ref=f9e93] [cursor=pointer]:
+                - /url: /shipping-policy
+            - listitem [ref=f9e94]:
+              - link "Returns & Cancellations" [ref=f9e95] [cursor=pointer]:
+                - /url: /returns-policy
+            - listitem [ref=f9e96]:
+              - link "Privacy & Data Policy" [ref=f9e97] [cursor=pointer]:
+                - /url: /privacy-policy
+            - listitem [ref=f9e98]:
+              - link "Contact Artisan Support" [ref=f9e99] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f9e100]:
+          - generic [ref=f9e101]: CraftNest Stories
+          - paragraph [ref=f9e102]: Receive stories from independent makers, secret artisan discounts, and new collection launches.
+          - generic [ref=f9e103]:
+            - generic [ref=f9e104]:
+              - textbox "Email address for newsletter" [ref=f9e105]:
+                - /placeholder: Your email address
+              - button "Subscribe to newsletter" [ref=f9e106] [cursor=pointer]
+            - generic [ref=f9e110] [cursor=pointer]:
+              - checkbox "I agree to receive handmade inspiration and accept the privacy policy." [ref=f9e111]
+              - generic [ref=f9e112]: I agree to receive handmade inspiration and accept the privacy policy.
+      - separator [ref=f9e113]
+      - generic [ref=f9e114]:
+        - generic [ref=f9e115]: © 2026 CraftNest · Handmade with heart · All rights reserved
+        - generic [ref=f9e118]:
+          - link "Privacy" [ref=f9e119] [cursor=pointer]:
+            - /url: /privacy-policy
+          - link "Terms" [ref=f9e120] [cursor=pointer]:
+            - /url: /returns-policy
+          - link "Shipping" [ref=f9e121] [cursor=pointer]:
+            - /url: /shipping-policy
+  - status

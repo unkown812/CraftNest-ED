@@ -5,11 +5,7 @@ import {
   Edit,
   Trash2,
   Image as ImageIcon,
-  CheckCircle,
-  XCircle,
-  Eye,
-  X,
-  AlertCircle
+  X
 } from 'lucide-react';
 import api from '../../api/client';
 import { useToast } from '../../context/ToastContext';
@@ -44,6 +40,7 @@ const INITIAL_FORM = {
 const SellerProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState(INITIAL_FORM);
@@ -54,12 +51,14 @@ const SellerProductsPage = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      setError('');
       const res = await api.get('/seller/products');
       if (res.data.success) {
         setProducts(res.data.products);
       }
     } catch (err) {
       console.error('Error fetching seller products:', err);
+      setError(err.response?.data?.message || 'Failed to load your products');
     } finally {
       setLoading(false);
     }
@@ -173,68 +172,54 @@ const SellerProductsPage = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: '4rem 0', textAlign: 'center' }}>
-        <p>Loading your products...</p>
+      <div className="page-loading" style={{ flexDirection: 'column', gap: 'var(--space-sm)' }}>
+        <div className="spinner" />
+        <p className="t-caption">Loading your products...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-surface" style={{ marginTop: 'var(--space-lg)' }}>
+        <span>{error}</span>
+        <button onClick={fetchProducts} className="btn btn-secondary btn-sm" style={{ marginLeft: 'auto' }}>
+          Retry
+        </button>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="page-stack">
       {/* Header */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1rem',
-          marginBottom: '2rem'
-        }}
-      >
+      <div className="toolbar">
         <div>
-          <h1 style={{ fontSize: '2rem', margin: 0, color: 'var(--color-forest-green)' }}>
-            My Handcrafted Products ({products.length})
-          </h1>
-          <p style={{ color: 'var(--color-text-muted)', margin: '4px 0 0 0' }}>
+          <p className="t-caption" style={{ marginBottom: 'var(--space-xs)' }}>Product Studio</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
+            <h1 className="t-headline" style={{ margin: 0 }}>My Handcrafted Products</h1>
+            <span className="badge badge-outline">{products.length} Listed</span>
+          </div>
+          <p className="t-body-sm" style={{ margin: 'var(--space-xxs) 0 0 0' }}>
             List, update stock, prices, and manage your artisan catalogue
           </p>
         </div>
 
-        <button onClick={openCreateModal} className="btn btn-primary">
-          <Plus size={18} />
+        <div className="toolbar-spacer" />
+        <button onClick={openCreateModal} className="btn btn-primary btn-sm">
+          <Plus size={16} aria-hidden="true" />
           <span>Add New Creation</span>
         </button>
       </div>
 
       {/* Products Table */}
       {products.length === 0 ? (
-        <div
-          className="card"
-          style={{
-            padding: '4rem 2rem',
-            textAlign: 'center',
-            backgroundColor: '#fff',
-            border: '1px dashed var(--color-border)'
-          }}
-        >
-          <div
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--color-soft-beige)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1.25rem auto',
-              color: 'var(--color-forest-green)'
-            }}
-          >
-            <Package size={28} />
+        <div className="empty-state">
+          <div className="empty-icon">
+            <Package size={24} aria-hidden="true" />
           </div>
-          <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>No products listed yet</h3>
-          <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', maxWidth: '420px', margin: '0 auto 1.5rem auto' }}>
+          <h3>No products listed yet</h3>
+          <p>
             Begin by adding your first candle, crochet creation, pottery piece, or handmade gift hamper.
           </p>
           <button onClick={openCreateModal} className="btn btn-primary">
@@ -242,83 +227,77 @@ const SellerProductsPage = () => {
           </button>
         </div>
       ) : (
-        <div
-          className="card"
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: 'var(--radius-lg)',
-            overflow: 'hidden'
-          }}
-        >
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+        <div className="table-wrap">
+          <div className="table-scroll">
+            <table className="table">
               <thead>
-                <tr style={{ backgroundColor: 'var(--color-cream-light)', borderBottom: '1px solid var(--color-border)' }}>
-                  <th style={{ padding: '12px 16px' }}>Creation</th>
-                  <th style={{ padding: '12px 16px' }}>Category</th>
-                  <th style={{ padding: '12px 16px' }}>Price</th>
-                  <th style={{ padding: '12px 16px' }}>Stock</th>
-                  <th style={{ padding: '12px 16px' }}>Rating</th>
-                  <th style={{ padding: '12px 16px' }}>Status</th>
-                  <th style={{ padding: '12px 16px', textAlign: 'right' }}>Actions</th>
+                <tr>
+                  <th>Creation</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Rating</th>
+                  <th>Status</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {products.map((prod) => (
-                  <tr key={prod._id} style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
-                    <td style={{ padding: '12px 16px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <img
-                          src={prod.images?.[0] || 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=400&q=80'}
-                          alt={prod.name}
-                          style={{ width: '48px', height: '48px', borderRadius: '8px', objectFit: 'cover' }}
-                        />
+                  <tr key={prod._id}>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+                        <div className="img-frame" style={{ width: '48px', height: '48px', flexShrink: 0 }}>
+                          <img
+                            src={prod.images?.[0] || 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=400&q=80'}
+                            alt={prod.name}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        </div>
                         <div>
-                          <div style={{ fontWeight: '700', color: 'var(--color-dark-text)' }}>{prod.name}</div>
-                          <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
+                          <div style={{ fontWeight: 540 }}>{prod.name}</div>
+                          <div className="t-caption" style={{ marginTop: 'var(--space-xxs)' }}>
                             {prod.processingTime}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding: '12px 16px' }}>
-                      <span className="badge badge-forest" style={{ fontSize: '0.72rem' }}>
-                        {prod.category}
-                      </span>
+                    <td>
+                      <span className="badge badge-neutral">{prod.category}</span>
                     </td>
-                    <td style={{ padding: '12px 16px', fontWeight: '700', color: 'var(--color-forest-green)' }}>
+                    <td style={{ fontWeight: 540 }}>
                       ₹{prod.price.toLocaleString('en-IN')}
                     </td>
-                    <td style={{ padding: '12px 16px' }}>
-                      <span style={{ fontWeight: '700', color: prod.stock <= 3 ? 'var(--color-terracotta)' : 'inherit' }}>
+                    <td>
+                      <span style={{ fontWeight: 540, color: prod.stock <= 3 ? 'var(--color-semantic-warning)' : 'var(--color-ink)' }}>
                         {prod.stock} units
                       </span>
                     </td>
-                    <td style={{ padding: '12px 16px' }}>
+                    <td style={{ color: 'var(--color-star)' }} aria-label={`Rated ${prod.averageRating > 0 ? prod.averageRating.toFixed(1) : '5.0'} of 5 by ${prod.reviewCount || 0} reviews`}>
                       ⭐ {prod.averageRating > 0 ? prod.averageRating.toFixed(1) : '5.0'} ({prod.reviewCount || 0})
                     </td>
-                    <td style={{ padding: '12px 16px' }}>
-                      <span className={`badge ${prod.status === 'active' ? 'badge-success' : 'badge-warning'}`} style={{ fontSize: '0.72rem' }}>
+                    <td>
+                      <span className={`badge ${prod.status === 'active' ? 'badge-success' : 'badge-warning'}`}>
                         {prod.status}
                       </span>
                     </td>
-                    <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                    <td style={{ textAlign: 'right' }}>
                       <div style={{ display: 'inline-flex', gap: '6px' }}>
                         <button
                           onClick={() => openEditModal(prod)}
-                          className="btn btn-icon btn-sm btn-outline"
+                          className="btn btn-icon btn-sm btn-icon-ghost"
+                          aria-label={`Edit ${prod.name}`}
                           title="Edit Product"
-                          style={{ width: '32px', height: '32px' }}
                         >
-                          <Edit size={14} />
+                          <Edit size={16} aria-hidden="true" />
                         </button>
                         <button
                           onClick={() => handleDeleteProduct(prod._id, prod.name)}
-                          className="btn btn-icon btn-sm btn-outline"
+                          className="btn btn-icon btn-sm btn-icon-ghost"
+                          aria-label={`Delete ${prod.name}`}
                           title="Delete Product"
-                          style={{ width: '32px', height: '32px', color: 'var(--color-error)', borderColor: 'var(--color-error)' }}
+                          style={{ color: 'var(--color-error)' }}
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={16} aria-hidden="true" />
                         </button>
                       </div>
                     </td>
@@ -339,52 +318,49 @@ const SellerProductsPage = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.55)',
-            backdropFilter: 'blur(4px)',
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 1100,
-            padding: '1.5rem'
+            padding: 'var(--space-lg)'
           }}
         >
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={editingProduct ? 'Edit artisan creation' : 'List new handcrafted creation'}
+            className="card-floating"
             style={{
-              backgroundColor: '#fff',
-              borderRadius: 'var(--radius-xl)',
+              borderRadius: 'var(--radius-lg)',
               maxWidth: '680px',
               width: '100%',
               maxHeight: '90vh',
               overflowY: 'auto',
-              padding: '2.5rem',
+              padding: 'var(--space-xl)',
               boxShadow: 'var(--shadow-floating)',
               position: 'relative'
             }}
           >
             <button
               onClick={() => setShowModal(false)}
-              style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: 'var(--color-text-muted)'
-              }}
+              className="btn btn-icon btn-icon-ghost"
+              aria-label="Close editor"
+              style={{ position: 'absolute', top: 'var(--space-md)', right: 'var(--space-md)' }}
             >
-              <X size={22} />
+              <X size={18} aria-hidden="true" />
             </button>
 
-            <h2 style={{ fontSize: '1.6rem', marginBottom: '0.5rem', color: 'var(--color-forest-green)' }}>
+            <p className="t-caption" style={{ marginBottom: 'var(--space-xs)' }}>Product Editor</p>
+            <h2 className="t-headline" style={{ margin: 0 }}>
               {editingProduct ? 'Edit Artisan Creation' : 'List New Handcrafted Creation'}
             </h2>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.88rem', marginBottom: '1.5rem' }}>
+            <p className="t-body-sm" style={{ margin: 'var(--space-xs) 0 var(--space-lg) 0' }}>
               Fill in the artisan details for customers across the CraftNest marketplace.
             </p>
 
             <form onSubmit={handleFormSubmit}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-md)' }}>
                 <div className="form-group" style={{ gridColumn: 'span 2' }}>
                   <label className="form-label">Product Title *</label>
                   <input
@@ -476,7 +452,7 @@ const SellerProductsPage = () => {
                 </div>
 
                 <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                  <label className="form-label">Detailed Story & Description *</label>
+                  <label className="form-label">Detailed Story &amp; Description *</label>
                   <textarea
                     rows={4}
                     name="description"
@@ -488,17 +464,43 @@ const SellerProductsPage = () => {
                   />
                 </div>
 
-                {/* Image Upload or URL */}
+                {/* Image Upload dropzone or URL */}
                 <div className="form-group" style={{ gridColumn: 'span 2' }}>
                   <label className="form-label">Upload Product Image</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setSelectedFile(e.target.files[0])}
-                    className="form-input"
-                    style={{ marginBottom: '8px' }}
-                  />
-                  <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
+                  <label
+                    className="card-tile"
+                    style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 'var(--space-md)', padding: 'var(--space-md)', cursor: 'pointer' }}
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setSelectedFile(e.target.files[0])}
+                      aria-label="Choose product image file"
+                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                    />
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: 'var(--radius-full)',
+                        backgroundColor: 'var(--color-canvas)',
+                        border: '1px solid var(--color-hairline)',
+                        color: 'var(--color-ink)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}
+                    >
+                      <ImageIcon size={18} />
+                    </span>
+                    <span className="t-caption" style={{ flex: 1 }}>
+                      {selectedFile ? selectedFile.name : 'PNG / JPG product photo'}
+                    </span>
+                    <span className="btn btn-secondary btn-sm" aria-hidden="true">Choose File</span>
+                  </label>
+                  <div className="form-hint" style={{ marginTop: 'var(--space-xs)' }}>
                     Or specify an image URL:
                   </div>
                   <input
@@ -508,31 +510,46 @@ const SellerProductsPage = () => {
                     onChange={handleInputChange}
                     className="form-input"
                     placeholder="https://images.unsplash.com/..."
-                    style={{ marginTop: '4px' }}
                   />
+                  {formData.imageUrl && (
+                    <div className="img-frame" style={{ width: '96px', height: '96px', marginTop: 'var(--space-xs)' }}>
+                      <img
+                        src={formData.imageUrl}
+                        alt="Product image preview"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Customization Available Toggle */}
                 <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.9rem' }}>
+                  <span className="form-label">Customization</span>
+                  <label className="form-check">
                     <input
                       type="checkbox"
                       name="customizationAvailable"
                       checked={formData.customizationAvailable}
                       onChange={handleInputChange}
+                      className="form-checkbox"
                     />
-                    <strong>Customization Available (inscriptions, colors, personalized messages)</strong>
+                    <span style={{ fontWeight: 540 }}>Customization Available (inscriptions, colors, personalized messages)</span>
                   </label>
                   {formData.customizationAvailable && (
-                    <input
-                      type="text"
-                      name="customizationNotes"
-                      value={formData.customizationNotes}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="Notes on what can be customized"
-                      style={{ marginTop: '8px' }}
-                    />
+                    <>
+                      <label className="form-label" htmlFor="customization-notes" style={{ marginTop: 'var(--space-xs)' }}>
+                        Customization Notes
+                      </label>
+                      <input
+                        type="text"
+                        id="customization-notes"
+                        name="customizationNotes"
+                        value={formData.customizationNotes}
+                        onChange={handleInputChange}
+                        className="form-input"
+                        placeholder="Notes on what can be customized"
+                      />
+                    </>
                   )}
                 </div>
 
@@ -551,11 +568,11 @@ const SellerProductsPage = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '1.5rem', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-sm)', marginTop: 'var(--space-lg)', borderTop: '1px solid var(--color-hairline-soft)', paddingTop: 'var(--space-md)' }}>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="btn btn-outline"
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
@@ -564,6 +581,7 @@ const SellerProductsPage = () => {
                   disabled={saving}
                   className="btn btn-primary"
                 >
+                  {saving && <div className="spinner spinner-sm" aria-hidden="true" />}
                   <span>{saving ? 'Saving...' : editingProduct ? 'Update Product' : 'Publish Listing'}</span>
                 </button>
               </div>

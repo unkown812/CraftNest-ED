@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Star, ShoppingBag, Eye } from 'lucide-react';
+import { Heart, Star, ShoppingBag } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
 
@@ -32,235 +32,93 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div
-      className="card product-card"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        position: 'relative',
-        backgroundColor: '#fff',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
-      }}
-    >
-      {/* Product Image Box */}
+    <div className="card product-card" style={{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}>
+      {/* Embedded preview inside a template-card tile */}
       <Link
         to={`/product/${product.slug || product._id}`}
-        style={{
-          position: 'relative',
-          paddingTop: '92%',
-          overflow: 'hidden',
-          backgroundColor: 'var(--color-cream-light)',
-          display: 'block'
-        }}
+        className="img-frame"
+        style={{ position: 'relative', paddingTop: '88%', display: 'block', margin: '10px 10px 0 10px' }}
+        aria-label={product.name}
       >
         <img
           src={imageUrl}
           alt={product.name}
           loading="lazy"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            transition: 'transform 0.4s ease'
-          }}
           className="product-img-hover"
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
 
-        {/* Wishlist Button */}
+        {/* Wishlist — circular icon button overlaid on the image */}
         <button
           onClick={handleWishlistClick}
-          aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-          style={{
-            position: 'absolute',
-            top: '12px',
-            right: '12px',
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.92)',
-            backdropFilter: 'blur(4px)',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-            transition: 'transform 0.15s ease'
-          }}
+          aria-label={inWishlist ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+          aria-pressed={inWishlist}
+          className="btn-icon"
+          style={{ position: 'absolute', top: 12, right: 12, width: 36, height: 36, minWidth: 36, minHeight: 36, boxShadow: 'var(--shadow-card)' }}
         >
           <Heart
-            size={18}
-            color={inWishlist ? 'var(--color-terracotta)' : 'var(--color-dark-text)'}
-            fill={inWishlist ? 'var(--color-terracotta)' : 'none'}
+            size={17}
+            color={inWishlist ? 'var(--color-primary)' : 'var(--color-ink)'}
+            fill={inWishlist ? 'var(--color-primary)' : 'none'}
+            aria-hidden="true"
           />
         </button>
-
-        {/* Category Pill Tag */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '12px',
-            left: '12px',
-            backgroundColor: 'rgba(53, 75, 54, 0.88)',
-            color: '#fff',
-            fontSize: '0.72rem',
-            fontWeight: '600',
-            letterSpacing: '0.04em',
-            padding: '4px 10px',
-            borderRadius: 'var(--radius-full)',
-            backdropFilter: 'blur(4px)'
-          }}
-        >
-          {product.category}
-        </div>
-
-        {/* Stock alerts */}
-        {isOutOfStock ? (
-          <div
-            style={{
-              position: 'absolute',
-              top: '12px',
-              left: '12px',
-              backgroundColor: 'rgba(200, 70, 48, 0.92)',
-              color: '#fff',
-              fontSize: '0.72rem',
-              fontWeight: '700',
-              padding: '4px 8px',
-              borderRadius: '4px'
-            }}
-          >
-            Sold Out
-          </div>
-        ) : isLowStock ? (
-          <div
-            style={{
-              position: 'absolute',
-              top: '12px',
-              left: '12px',
-              backgroundColor: 'rgba(169, 101, 72, 0.92)',
-              color: '#fff',
-              fontSize: '0.72rem',
-              fontWeight: '700',
-              padding: '4px 8px',
-              borderRadius: '4px'
-            }}
-          >
-            Only {product.stock} left
-          </div>
-        ) : null}
       </Link>
 
-      {/* Content Details */}
-      <div
-        style={{
-          padding: '1.1rem',
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
-          justifyContent: 'space-between',
-          gap: '0.75rem'
-        }}
-      >
-        <div>
-          {/* Seller shop attribution */}
-          {product.shop && (
-            <div
-              style={{
-                fontSize: '0.78rem',
-                color: 'var(--color-terracotta)',
-                fontWeight: '600',
-                marginBottom: '4px'
-              }}
-            >
-              by {product.shop.shopName}
-            </div>
-          )}
+      {/* Content */}
+      <div style={{ padding: '14px 16px 16px 16px', display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
+        {product.shop && (
+          <span className="t-caption" style={{ letterSpacing: '0.5px' }}>
+            by {product.shop.shopName}
+          </span>
+        )}
 
-          {/* Product Name */}
-          <h3
-            style={{
-              fontSize: '1.05rem',
-              fontWeight: '700',
-              margin: '0 0 6px 0',
-              lineHeight: '1.35',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden'
-            }}
+        <h3 style={{ fontSize: '17px', fontWeight: 540, lineHeight: 1.35, letterSpacing: '-0.2px' }}>
+          <Link
+            to={`/product/${product.slug || product._id}`}
+            style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
           >
-            <Link
-              to={`/product/${product.slug || product._id}`}
-              style={{ color: 'var(--color-dark-text)' }}
-            >
-              {product.name}
-            </Link>
-          </h3>
+            {product.name}
+          </Link>
+        </h3>
 
-          {/* Rating */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.82rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', color: '#E89E36' }}>
-              <Star size={14} fill="#E89E36" />
-            </div>
-            <span style={{ fontWeight: '700', color: 'var(--color-dark-text)' }}>
-              {product.averageRating > 0 ? product.averageRating.toFixed(1) : '5.0'}
-            </span>
-            <span style={{ color: 'var(--color-text-muted)' }}>
-              ({product.reviewCount || 1} {product.reviewCount === 1 ? 'review' : 'reviews'})
-            </span>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 330 }}>
+          <Star size={14} fill="var(--color-star)" color="var(--color-star)" aria-hidden="true" />
+          <span style={{ fontWeight: 480 }}>{product.averageRating > 0 ? product.averageRating.toFixed(1) : '5.0'}</span>
+          <span style={{ fontWeight: 330 }}>
+            ({product.reviewCount || 1} {product.reviewCount === 1 ? 'review' : 'reviews'})
+          </span>
         </div>
 
-        {/* Price & Action */}
+        {/* Price & action — mono price hierarchy, circular add button */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingTop: '0.5rem',
-            borderTop: '1px solid var(--color-border-subtle)',
+            gap: 8,
+            paddingTop: 10,
+            borderTop: '1px solid var(--color-hairline-soft)',
             marginTop: 'auto'
           }}
         >
-          <div>
-            <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>Price</span>
-            <div
-              style={{
-                fontSize: '1.25rem',
-                fontWeight: '800',
-                color: 'var(--color-forest-green)',
-                fontFamily: 'var(--font-sans)'
-              }}
-            >
-              ₹{product.price.toLocaleString('en-IN')}
-            </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+            <span className="t-caption" style={{ letterSpacing: '0.5px' }}>₹{product.price.toLocaleString('en-IN')}</span>
+            {isOutOfStock && <span className="badge badge-error">Sold out</span>}
+            {isLowStock && <span className="badge badge-cream">Only {product.stock} left</span>}
           </div>
 
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="btn btn-sm btn-primary"
-            style={{
-              opacity: isOutOfStock ? 0.5 : 1,
-              cursor: isOutOfStock ? 'not-allowed' : 'pointer'
-            }}
+            className="btn-icon btn-icon-primary btn-sm"
+            aria-label={isOutOfStock ? `${product.name} is sold out` : `Add ${product.name} to cart`}
             title={isOutOfStock ? 'Item is sold out' : 'Add to cart'}
           >
-            <ShoppingBag size={15} />
-            <span>{isOutOfStock ? 'Sold Out' : 'Add'}</span>
+            <ShoppingBag size={15} aria-hidden="true" />
           </button>
         </div>
       </div>
-
-      <style>{`
-        .product-card:hover .product-img-hover {
-          transform: scale(1.05);
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,0 +1,152 @@
+- generic [ref=f17e2]:
+  - banner [ref=f17e3]:
+    - generic [ref=f17e4]:
+      - link "CraftNest home" [ref=f17e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f17e6]: CraftNest
+      - textbox "Search products" [ref=f17e11]:
+        - /placeholder: Search candles, pottery, crochet…
+      - navigation "Primary" [ref=f17e12]:
+        - generic [ref=f17e13]:
+          - link "Shop All" [ref=f17e14] [cursor=pointer]:
+            - /url: /shop
+          - link "Candles" [ref=f17e15] [cursor=pointer]:
+            - /url: /shop?category=Handmade%20Candles
+          - link "Crochet" [ref=f17e16] [cursor=pointer]:
+            - /url: /shop?category=Crochet%20and%20Knitting
+          - link "Sell on CraftNest" [ref=f17e17] [cursor=pointer]:
+            - /url: /become-seller
+      - generic [ref=f17e23]:
+        - link "Wishlist" [ref=f17e24] [cursor=pointer]:
+          - /url: /buyer/wishlist
+        - link "Shopping cart" [ref=f17e27] [cursor=pointer]:
+          - /url: /cart
+        - generic [ref=f17e31]:
+          - link "Log In" [ref=f17e32] [cursor=pointer]:
+            - /url: /login
+          - link "Join" [ref=f17e33] [cursor=pointer]:
+            - /url: /register
+  - generic [ref=f17e35]:
+    - text: Handmade with heart · Free shipping across India on orders above ₹999 ·
+    - link "Explore crafts" [ref=f17e36] [cursor=pointer]:
+      - /url: /shop
+  - main [ref=f17e37]:
+    - generic [ref=f17e38]:
+      - generic [ref=f17e40]:
+        - generic [ref=f17e41]: Our story & vision
+        - heading "CraftNest — handmade with heart" [level=1] [ref=f17e42]
+        - paragraph [ref=f17e43]: Celebrating independent Indian makers, traditional craftsmanship, and mindful slow living.
+      - generic [ref=f17e45]:
+        - paragraph [ref=f17e46]:
+          - text: In a world increasingly dominated by mass assembly lines and disposable plastic,
+          - strong [ref=f17e47]: CraftNest
+          - text: "was founded with a singular belief: that everyday objects should carry soul, texture, and the warmth of human hands."
+        - generic [ref=f17e48]:
+          - generic [ref=f17e49]: The mission
+          - paragraph [ref=f17e50]: We bridge the gap between skilled home-based creators—from potters in Rajasthan and fiber artists in Gujarat to botanical candle makers in Karnataka—and conscious patrons who appreciate authentic craftsmanship. By ensuring transparent commission rates (90% payout to makers), we empower artisans to sustain their livelihoods and preserve heritage crafts.
+        - generic [ref=f17e51]:
+          - generic [ref=f17e52]:
+            - generic [ref=f17e53]: Artisan makers
+            - generic [ref=f17e54]: 100+
+            - generic [ref=f17e55]: Independent studios across India
+          - generic [ref=f17e56]:
+            - generic [ref=f17e57]: Maker payout
+            - generic [ref=f17e58]: 90%
+            - generic [ref=f17e59]: Transparent commission, zero hidden fees
+          - generic [ref=f17e60]:
+            - generic [ref=f17e61]: Delivery time
+            - generic [ref=f17e62]: 3–7 days
+            - generic [ref=f17e63]: Tracked courier, pan-India
+        - link "Explore Artisan Creations" [ref=f17e65] [cursor=pointer]:
+          - /url: /shop
+      - generic [ref=f17e71]:
+        - generic [ref=f17e72]: The CraftNest promise
+        - heading "Every order, held to three values." [level=2] [ref=f17e73]
+        - generic [ref=f17e74]:
+          - generic [ref=f17e75]:
+            - generic [ref=f17e76]: "01"
+            - paragraph [ref=f17e77]:
+              - strong [ref=f17e78]: "100% Authentic Handcrafted:"
+              - text: Every item listed is created by independent hands.
+          - generic [ref=f17e79]:
+            - generic [ref=f17e80]: "02"
+            - paragraph [ref=f17e81]:
+              - strong [ref=f17e82]: "Verified Makers:"
+              - text: All seller studios are vetted for material purity and ethical processes.
+          - generic [ref=f17e83]:
+            - generic [ref=f17e84]: "03"
+            - paragraph [ref=f17e85]:
+              - strong [ref=f17e86]: "Pan-India Safe Courier:"
+              - text: Sustainable, protective packaging to ensure intact delivery.
+  - contentinfo [ref=f17e87]:
+    - generic [ref=f17e88]:
+      - generic [ref=f17e89]:
+        - generic [ref=f17e90]: CraftNest
+        - paragraph [ref=f17e91]: CraftNest connects home-based creators and independent artisans with conscious shoppers looking for one-of-a-kind handmade treasures.
+        - link "support@craftnest.in" [ref=f17e92] [cursor=pointer]:
+          - /url: mailto:support@craftnest.in
+        - generic [ref=f17e96]: Mumbai, Maharashtra, India
+      - generic [ref=f17e100]:
+        - navigation "Categories" [ref=f17e101]:
+          - list [ref=f17e103]:
+            - listitem [ref=f17e104]:
+              - link "Handmade Candles" [ref=f17e105] [cursor=pointer]:
+                - /url: /shop?category=Handmade%20Candles
+            - listitem [ref=f17e106]:
+              - link "Artisanal Jewellery" [ref=f17e107] [cursor=pointer]:
+                - /url: /shop?category=Jewellery
+            - listitem [ref=f17e108]:
+              - link "Crochet & Knitting" [ref=f17e109] [cursor=pointer]:
+                - /url: /shop?category=Crochet%20and%20Knitting
+            - listitem [ref=f17e110]:
+              - link "Pottery & Home Décor" [ref=f17e111] [cursor=pointer]:
+                - /url: /shop?category=Home%20D%C3%A9cor
+            - listitem [ref=f17e112]:
+              - link "Paintings & Art" [ref=f17e113] [cursor=pointer]:
+                - /url: /shop?category=Paintings%20and%20Art
+            - listitem [ref=f17e114]:
+              - link "Curated Gift Hampers" [ref=f17e115] [cursor=pointer]:
+                - /url: /shop?category=Gift%20Hampers
+        - navigation "Customer care" [ref=f17e116]:
+          - generic [ref=f17e117]: Customer Care
+          - list [ref=f17e118]:
+            - listitem [ref=f17e119]:
+              - link "About CraftNest" [ref=f17e120] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=f17e121]:
+              - link "Become a Seller" [ref=f17e122] [cursor=pointer]:
+                - /url: /become-seller
+            - listitem [ref=f17e123]:
+              - link "Shipping & Delivery Policy" [ref=f17e124] [cursor=pointer]:
+                - /url: /shipping-policy
+            - listitem [ref=f17e125]:
+              - link "Returns & Cancellations" [ref=f17e126] [cursor=pointer]:
+                - /url: /returns-policy
+            - listitem [ref=f17e127]:
+              - link "Privacy & Data Policy" [ref=f17e128] [cursor=pointer]:
+                - /url: /privacy-policy
+            - listitem [ref=f17e129]:
+              - link "Contact Artisan Support" [ref=f17e130] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f17e131]:
+          - generic [ref=f17e132]: CraftNest Stories
+          - paragraph [ref=f17e133]: Receive stories from independent makers, secret artisan discounts, and new collection launches.
+          - generic [ref=f17e134]:
+            - generic [ref=f17e135]:
+              - textbox "Email address for newsletter" [ref=f17e136]:
+                - /placeholder: Your email address
+              - button "Subscribe to newsletter" [ref=f17e137] [cursor=pointer]
+            - generic [ref=f17e141] [cursor=pointer]:
+              - checkbox "I agree to receive handmade inspiration and accept the privacy policy." [ref=f17e142]
+              - generic [ref=f17e143]: I agree to receive handmade inspiration and accept the privacy policy.
+      - separator [ref=f17e144]
+      - generic [ref=f17e145]:
+        - generic [ref=f17e146]: © 2026 CraftNest · Handmade with heart · All rights reserved
+        - generic [ref=f17e149]:
+          - link "Privacy" [ref=f17e150] [cursor=pointer]:
+            - /url: /privacy-policy
+          - link "Terms" [ref=f17e151] [cursor=pointer]:
+            - /url: /returns-policy
+          - link "Shipping" [ref=f17e152] [cursor=pointer]:
+            - /url: /shipping-policy
+  - status

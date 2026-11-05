@@ -1,0 +1,126 @@
+- generic [ref=f21e2]:
+  - banner [ref=f21e3]:
+    - generic [ref=f21e4]:
+      - link "CraftNest home" [ref=f21e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f21e6]: CraftNest
+      - generic [ref=f21e10]:
+        - link "Wishlist" [ref=f21e11] [cursor=pointer]:
+          - /url: /buyer/wishlist
+        - link "Shopping cart" [ref=f21e14] [cursor=pointer]:
+          - /url: /cart
+        - button "Open navigation menu" [ref=f21e18] [cursor=pointer]
+  - generic [ref=f21e21]:
+    - text: Handmade with heart · Free shipping across India on orders above ₹999 ·
+    - link "Explore crafts" [ref=f21e22] [cursor=pointer]:
+      - /url: /shop
+  - main [ref=f21e23]:
+    - generic [ref=f21e25]:
+      - generic [ref=f21e26]:
+        - paragraph [ref=f21e27]: The catalogue
+        - heading "Handmade Marketplace" [level=1] [ref=f21e28]
+        - paragraph [ref=f21e29]: Authentic craft pieces made by Indian artisans, one drop at a time.
+      - generic [ref=f21e30]:
+        - search [ref=f21e31]:
+          - generic [ref=f21e32]: Search creations
+          - textbox "Search creations" [ref=f21e33]:
+            - /placeholder: Keywords, maker, materials…
+        - generic [ref=f21e34]:
+          - generic [ref=f21e35]: Min ₹
+          - spinbutton "Min ₹" [ref=f21e36]
+        - generic [ref=f21e37]:
+          - generic [ref=f21e38]: Max ₹
+          - spinbutton "Max ₹" [ref=f21e39]
+        - button "Apply price" [ref=f21e40] [cursor=pointer]
+        - generic [ref=f21e41]:
+          - generic [ref=f21e42]: Sort
+          - combobox "Sort" [ref=f21e43]:
+            - option "Newest arrivals" [selected]
+            - 'option "Price: low to high"'
+            - 'option "Price: high to low"'
+            - option "Popularity / sales"
+            - option "Highest rated"
+      - group "Filter by category" [ref=f21e44]:
+        - button "All" [ref=f21e45] [cursor=pointer]
+        - button "Handmade Candles" [ref=f21e46] [cursor=pointer]
+        - button "Jewellery" [ref=f21e47] [cursor=pointer]
+        - button "Crochet and Knitting" [ref=f21e48] [cursor=pointer]
+        - button "Home Décor" [ref=f21e49] [cursor=pointer]
+        - button "Paintings and Art" [ref=f21e50] [cursor=pointer]
+        - button "Greeting Cards" [ref=f21e51] [cursor=pointer]
+        - button "Gift Hampers" [ref=f21e52] [cursor=pointer]
+        - button "Personalized Gifts" [ref=f21e53] [cursor=pointer]
+        - button "Other Crafts" [ref=f21e54] [cursor=pointer]
+      - status "Loading catalogue" [ref=f21e55]
+  - contentinfo [ref=f21e57]:
+    - generic [ref=f21e58]:
+      - generic [ref=f21e59]:
+        - generic [ref=f21e60]: CraftNest
+        - paragraph [ref=f21e61]: CraftNest connects home-based creators and independent artisans with conscious shoppers looking for one-of-a-kind handmade treasures.
+        - link "support@craftnest.in" [ref=f21e62] [cursor=pointer]:
+          - /url: mailto:support@craftnest.in
+        - generic [ref=f21e66]: Mumbai, Maharashtra, India
+      - generic [ref=f21e70]:
+        - navigation "Categories" [ref=f21e71]:
+          - list [ref=f21e73]:
+            - listitem [ref=f21e74]:
+              - link "Handmade Candles" [ref=f21e75] [cursor=pointer]:
+                - /url: /shop?category=Handmade%20Candles
+            - listitem [ref=f21e76]:
+              - link "Artisanal Jewellery" [ref=f21e77] [cursor=pointer]:
+                - /url: /shop?category=Jewellery
+            - listitem [ref=f21e78]:
+              - link "Crochet & Knitting" [ref=f21e79] [cursor=pointer]:
+                - /url: /shop?category=Crochet%20and%20Knitting
+            - listitem [ref=f21e80]:
+              - link "Pottery & Home Décor" [ref=f21e81] [cursor=pointer]:
+                - /url: /shop?category=Home%20D%C3%A9cor
+            - listitem [ref=f21e82]:
+              - link "Paintings & Art" [ref=f21e83] [cursor=pointer]:
+                - /url: /shop?category=Paintings%20and%20Art
+            - listitem [ref=f21e84]:
+              - link "Curated Gift Hampers" [ref=f21e85] [cursor=pointer]:
+                - /url: /shop?category=Gift%20Hampers
+        - navigation "Customer care" [ref=f21e86]:
+          - generic [ref=f21e87]: Customer Care
+          - list [ref=f21e88]:
+            - listitem [ref=f21e89]:
+              - link "About CraftNest" [ref=f21e90] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=f21e91]:
+              - link "Become a Seller" [ref=f21e92] [cursor=pointer]:
+                - /url: /become-seller
+            - listitem [ref=f21e93]:
+              - link "Shipping & Delivery Policy" [ref=f21e94] [cursor=pointer]:
+                - /url: /shipping-policy
+            - listitem [ref=f21e95]:
+              - link "Returns & Cancellations" [ref=f21e96] [cursor=pointer]:
+                - /url: /returns-policy
+            - listitem [ref=f21e97]:
+              - link "Privacy & Data Policy" [ref=f21e98] [cursor=pointer]:
+                - /url: /privacy-policy
+            - listitem [ref=f21e99]:
+              - link "Contact Artisan Support" [ref=f21e100] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f21e101]:
+          - generic [ref=f21e102]: CraftNest Stories
+          - paragraph [ref=f21e103]: Receive stories from independent makers, secret artisan discounts, and new collection launches.
+          - generic [ref=f21e104]:
+            - generic [ref=f21e105]:
+              - textbox "Email address for newsletter" [ref=f21e106]:
+                - /placeholder: Your email address
+              - button "Subscribe to newsletter" [ref=f21e107] [cursor=pointer]
+            - generic [ref=f21e111] [cursor=pointer]:
+              - checkbox "I agree to receive handmade inspiration and accept the privacy policy." [ref=f21e112]
+              - generic [ref=f21e113]: I agree to receive handmade inspiration and accept the privacy policy.
+      - separator [ref=f21e114]
+      - generic [ref=f21e115]:
+        - generic [ref=f21e116]: © 2026 CraftNest · Handmade with heart · All rights reserved
+        - generic [ref=f21e119]:
+          - link "Privacy" [ref=f21e120] [cursor=pointer]:
+            - /url: /privacy-policy
+          - link "Terms" [ref=f21e121] [cursor=pointer]:
+            - /url: /returns-policy
+          - link "Shipping" [ref=f21e122] [cursor=pointer]:
+            - /url: /shipping-policy
+  - status

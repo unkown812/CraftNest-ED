@@ -7,14 +7,11 @@ import {
   Truck,
   ShieldCheck,
   RotateCcw,
-  Clock,
   Sparkles,
   Store,
   CheckCircle2,
-  AlertCircle,
-  Package,
-  Layers,
-  Ruler
+  Plus,
+  Minus
 } from 'lucide-react';
 import api from '../../api/client';
 import { useCart } from '../../context/CartContext';
@@ -27,13 +24,14 @@ const ProductDetailsPage = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { addToast } = useToast();
 
   const [product, setProduct] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   // Review states
   const [reviews, setReviews] = useState([]);
@@ -75,43 +73,50 @@ const ProductDetailsPage = () => {
     fetchProductDetails();
   }, [id, isAuthenticated]);
 
+  // Surface-soft skeleton while the product loads
   if (loading) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '60vh',
-          flexDirection: 'column',
-          gap: '1rem'
-        }}
-      >
-        <div
-          style={{
-            width: '45px',
-            height: '45px',
-            border: '4px solid var(--color-soft-beige)',
-            borderTopColor: 'var(--color-forest-green)',
-            borderRadius: '50%',
-            animation: 'spin 0.8s linear infinite'
-          }}
-        />
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <p style={{ color: 'var(--color-text-muted)' }}>Loading handcrafted creation...</p>
+      <div className="container" style={{ paddingTop: 'var(--space-lg)', paddingBottom: 'var(--space-section)' }} aria-busy="true">
+        <div role="status" aria-label="Loading product">
+          <div
+            style={{
+              height: 12,
+              width: 220,
+              backgroundColor: 'var(--color-surface-soft)',
+              borderRadius: 'var(--radius-pill)',
+              marginBottom: 'var(--space-xl)'
+            }}
+          />
+          <div className="grid-2" style={{ gap: 'var(--space-xl)', alignItems: 'start' }}>
+            <div style={{ backgroundColor: 'var(--color-surface-soft)', borderRadius: 'var(--radius-lg)', minHeight: 480 }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+              {[64, 40, 28, 180, 24, 120].map((w, i) => (
+                <div
+                  key={i}
+                  style={{
+                    height: i === 0 ? 26 : 16,
+                    width: i === 0 ? '86%' : i === 3 ? '100%' : `${w * 2}px`,
+                    backgroundColor: 'var(--color-surface-soft)',
+                    borderRadius: 'var(--radius-pill)'
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="container" style={{ padding: '6rem 1rem', textAlign: 'center' }}>
-        <h2>Product not found</h2>
-        <p style={{ color: 'var(--color-text-muted)', margin: '1rem 0 2rem 0' }}>
+      <div className="container" style={{ padding: 'var(--space-section) 0', textAlign: 'center' }}>
+        <h2 className="t-headline">Product not found</h2>
+        <p className="t-body" style={{ margin: 'var(--space-sm) 0 var(--space-xl) 0' }}>
           This handcrafted treasure might have been moved or is no longer listed.
         </p>
         <Link to="/shop" className="btn btn-primary">
-          Back to Shop
+          Back to shop
         </Link>
       </div>
     );
@@ -122,9 +127,13 @@ const ProductDetailsPage = () => {
   const isLowStock = product.stock > 0 && product.stock <= 4;
   const currentImage = (product.images && product.images[selectedImageIndex]) || product.images?.[0];
 
-  const handleAddToCart = () => {
-    if (!isOutOfStock) {
-      addToCart(product._id, quantity);
+  const handleAddToCart = async () => {
+    if (isOutOfStock || addingToCart) return;
+    setAddingToCart(true);
+    try {
+      await addToCart(product._id, quantity);
+    } finally {
+      setAddingToCart(false);
     }
   };
 
@@ -157,431 +166,336 @@ const ProductDetailsPage = () => {
   };
 
   return (
-    <div style={{ backgroundColor: 'var(--color-warm-cream)', minHeight: '90vh', padding: '2.5rem 0 6rem 0' }}>
-      <div className="container">
-        {/* Breadcrumb */}
-        <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '2rem' }}>
+    <div style={{ minHeight: '90vh' }}>
+      <div className="container" style={{ paddingTop: 'var(--space-lg)', paddingBottom: 'var(--space-section)' }}>
+        {/* Breadcrumb — mono taxonomy */}
+        <nav aria-label="Breadcrumb" className="t-caption" style={{ marginBottom: 'var(--space-xl)' }}>
           <Link to="/" style={{ color: 'inherit' }}>Home</Link> /{' '}
           <Link to="/shop" style={{ color: 'inherit' }}>Shop</Link> /{' '}
           <Link to={`/shop?category=${encodeURIComponent(product.category)}`} style={{ color: 'inherit' }}>
             {product.category}
           </Link>{' '}
-          / <span style={{ color: 'var(--color-terracotta)', fontWeight: '600' }}>{product.name}</span>
-        </div>
+          / <span>{product.name}</span>
+        </nav>
 
-        {/* Product Main Display (Gallery + Info) */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-            gap: '3.5rem',
-            marginBottom: '4rem',
-            alignItems: 'start'
-          }}
-        >
-          {/* Left Gallery Box */}
+        {/* Gallery + purchase panel */}
+        <div className="grid-2" style={{ gap: 'var(--space-xl)', alignItems: 'start', marginBottom: 'var(--space-section)' }}>
+          {/* Left gallery */}
           <div>
-            {/* Primary Main Image */}
-            <div
-              style={{
-                position: 'relative',
-                borderRadius: 'var(--radius-lg)',
-                overflow: 'hidden',
-                backgroundColor: '#fff',
-                border: '1px solid var(--color-border)',
-                boxShadow: 'var(--shadow-card)',
-                aspectRatio: '1 / 1'
-              }}
-            >
+            <div className="img-frame" style={{ position: 'relative', aspectRatio: '1 / 1' }}>
               <img
                 src={currentImage}
                 alt={product.name}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
-
-              {/* Wishlist Button on image */}
               <button
                 onClick={() => toggleWishlist(product)}
-                style={{
-                  position: 'absolute',
-                  top: '16px',
-                  right: '16px',
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  border: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                }}
+                aria-label={inWishlist ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+                aria-pressed={inWishlist}
+                className="btn-icon"
+                style={{ position: 'absolute', top: 'var(--space-sm)', right: 'var(--space-sm)', boxShadow: 'var(--shadow-card)' }}
               >
                 <Heart
-                  size={20}
-                  color={inWishlist ? 'var(--color-terracotta)' : 'var(--color-dark-text)'}
-                  fill={inWishlist ? 'var(--color-terracotta)' : 'none'}
+                  size={17}
+                  color={inWishlist ? 'var(--color-primary)' : 'var(--color-ink)'}
+                  fill={inWishlist ? 'var(--color-primary)' : 'none'}
+                  aria-hidden="true"
                 />
               </button>
             </div>
 
-            {/* Thumbnail Selectors */}
+            {/* Thumbnails */}
             {product.images && product.images.length > 1 && (
-              <div style={{ display: 'flex', gap: '12px', marginTop: '1rem', overflowX: 'auto', paddingBottom: '6px' }}>
+              <div style={{ display: 'flex', gap: 'var(--space-xs)', marginTop: 'var(--space-sm)', overflowX: 'auto' }}>
                 {product.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImageIndex(idx)}
-                    style={{
-                      width: '74px',
-                      height: '74px',
-                      borderRadius: 'var(--radius-md)',
-                      overflow: 'hidden',
-                      border: '2px solid',
-                      borderColor: selectedImageIndex === idx ? 'var(--color-forest-green)' : 'var(--color-border)',
-                      padding: 0,
-                      cursor: 'pointer',
-                      flexShrink: 0
-                    }}
+                    aria-label={`View image ${idx + 1} of ${product.images.length}`}
+                    aria-pressed={selectedImageIndex === idx}
+                    className={`thumb-ring ${selectedImageIndex === idx ? 'is-active' : ''}`}
+                    style={{ width: 74, height: 74, padding: 0, flexShrink: 0, background: 'none' }}
                   >
-                    <img src={img} alt={`Thumbnail ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={img} alt="" aria-hidden="true" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Right Product Details Info */}
-          <div>
-            {/* Category & Status */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.8rem' }}>
-              <span className="badge badge-forest">{product.category}</span>
-              {product.featured && <span className="badge badge-terracotta">Featured Artisan</span>}
-            </div>
+          {/* Right purchase panel */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+            {product.shop && (
+              <p className="t-caption" style={{ margin: 0 }}>
+                Crafted by {product.shop.shopName}
+              </p>
+            )}
 
-            {/* Title */}
-            <h1 style={{ fontSize: '2.2rem', marginBottom: '0.75rem', lineHeight: '1.25' }}>
+            <h1 className="t-display-lg w340" style={{ margin: 'calc(-1 * var(--space-xxs)) 0 0 0', overflowWrap: 'anywhere' }}>
               {product.name}
             </h1>
 
-            {/* Maker Attribution */}
-            {product.shop && (
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: '#fff',
-                  border: '1px solid var(--color-border)',
-                  padding: '6px 14px',
-                  borderRadius: 'var(--radius-full)',
-                  marginBottom: '1.25rem',
-                  fontSize: '0.88rem'
-                }}
-              >
-                <Store size={15} color="var(--color-forest-green)" />
-                <span>Crafted by</span>
-                <strong style={{ color: 'var(--color-forest-green)' }}>{product.shop.shopName}</strong>
-                {product.shop.contactDetails?.city && (
-                  <span style={{ color: 'var(--color-text-muted)' }}>({product.shop.contactDetails.city})</span>
-                )}
-              </div>
-            )}
-
-            {/* Rating Stars */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', color: '#E89E36' }}>
+            {/* Rating row */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', color: 'var(--color-star)' }} aria-hidden="true">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    size={18}
-                    fill={i < Math.round(product.averageRating || 5) ? '#E89E36' : 'none'}
-                    color="#E89E36"
+                    size={16}
+                    fill={i < Math.round(product.averageRating || 5) ? 'var(--color-star)' : 'none'}
+                    color="var(--color-star)"
                   />
                 ))}
               </div>
-              <span style={{ fontWeight: '700', fontSize: '0.95rem' }}>
+              <span style={{ fontWeight: 480 }}>
                 {product.averageRating > 0 ? product.averageRating.toFixed(1) : '5.0'}
               </span>
-              <span style={{ color: 'var(--color-text-muted)', fontSize: '0.88rem' }}>
-                • {reviews.length} {reviews.length === 1 ? 'verified review' : 'verified reviews'}
+              <span className="t-caption" style={{ letterSpacing: '0.5px' }}>
+                {reviews.length} {reviews.length === 1 ? 'verified review' : 'verified reviews'}
               </span>
             </div>
 
-            {/* Price Box */}
-            <div
-              style={{
-                backgroundColor: 'var(--color-cream-light)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-md)',
-                padding: '1.25rem 1.5rem',
-                marginBottom: '1.75rem'
-              }}
-            >
-              <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Artisan Price</div>
-              <div
-                style={{
-                  fontSize: '2.4rem',
-                  fontWeight: '800',
-                  color: 'var(--color-forest-green)',
-                  fontFamily: 'var(--font-sans)',
-                  lineHeight: '1.1',
-                  margin: '4px 0'
-                }}
-              >
-                ₹{product.price.toLocaleString('en-IN')}
+            {/* Price + stock status */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
+              <div>
+                <p className="t-caption" style={{ margin: '0 0 var(--space-xxs) 0' }}>Artisan price</p>
+                <div className="stat-value" style={{ margin: 0 }}>
+                  ₹{product.price.toLocaleString('en-IN')}
+                </div>
               </div>
-              <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>
-                Inclusive of all taxes • Free delivery on orders above ₹999
-              </div>
+              {isOutOfStock ? (
+                <span className="badge badge-error">Sold out</span>
+              ) : isLowStock ? (
+                <span className="badge badge-cream">Low stock · {product.stock} left</span>
+              ) : (
+                <span className="badge badge-mint">In stock</span>
+              )}
+              <p className="t-caption" style={{ margin: 'auto 0 0 0', letterSpacing: '0.4px' }}>
+                Incl. all taxes · free delivery above ₹999
+              </p>
             </div>
 
-            {/* Description */}
-            <p
-              style={{
-                fontSize: '1rem',
-                color: 'var(--color-dark-text)',
-                lineHeight: '1.7',
-                marginBottom: '1.75rem',
-                whiteSpace: 'pre-line'
-              }}
-            >
+            <p className="t-body" style={{ margin: 0, whiteSpace: 'pre-line' }}>
               {product.description}
             </p>
 
-            {/* Product Specifications Table */}
-            <div
-              style={{
-                backgroundColor: '#fff',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-md)',
-                padding: '1.25rem',
-                marginBottom: '2rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.75rem',
-                fontSize: '0.88rem'
-              }}
-            >
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <Layers size={17} color="var(--color-terracotta)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <div>
-                  <strong>Materials:</strong> {product.materials || 'Handcrafted natural materials'}
-                </div>
+            {/* Specification rows — key/value with hairline separators */}
+            <div style={{ borderTop: '1px solid var(--color-hairline)', marginTop: 'var(--space-xs)' }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(min(100%, 110px), 150px) 1fr',
+                  gap: 'var(--space-sm)',
+                  alignItems: 'baseline',
+                  padding: 'var(--space-sm) 0',
+                  borderBottom: '1px solid var(--color-hairline-soft)'
+                }}
+              >
+                <span className="t-caption">Materials</span>
+                <span className="t-body-sm">{product.materials || 'Handcrafted natural materials'}</span>
               </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <Ruler size={17} color="var(--color-terracotta)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <div>
-                  <strong>Dimensions:</strong> {product.dimensions || 'Standard handcrafted sizing'}
-                </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(min(100%, 110px), 150px) 1fr',
+                  gap: 'var(--space-sm)',
+                  alignItems: 'baseline',
+                  padding: 'var(--space-sm) 0',
+                  borderBottom: '1px solid var(--color-hairline-soft)'
+                }}
+              >
+                <span className="t-caption">Dimensions</span>
+                <span className="t-body-sm">{product.dimensions || 'Standard handcrafted sizing'}</span>
               </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <Clock size={17} color="var(--color-terracotta)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <div>
-                  <strong>Processing Time:</strong> {product.processingTime || '2-4 business days'}
-                </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(min(100%, 110px), 150px) 1fr',
+                  gap: 'var(--space-sm)',
+                  alignItems: 'baseline',
+                  padding: 'var(--space-sm) 0'
+                }}
+              >
+                <span className="t-caption">Processing time</span>
+                <span className="t-body-sm">{product.processingTime || '2–4 business days'}</span>
               </div>
               {product.customizationAvailable && (
-                <div style={{ display: 'flex', gap: '8px', color: 'var(--color-forest-green)' }}>
-                  <Sparkles size={17} style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <div>
-                    <strong>Customization Available:</strong>{' '}
-                    {product.customizationNotes || 'Special gift inscriptions and custom sizes available upon request.'}
-                  </div>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'minmax(min(100%, 110px), 150px) 1fr',
+                    gap: 'var(--space-sm)',
+                    alignItems: 'baseline',
+                    padding: 'var(--space-sm) 0',
+                    borderTop: '1px solid var(--color-hairline-soft)'
+                  }}
+                >
+                  <span className="t-caption">Customisation</span>
+                  <span className="t-body-sm" style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-xxs)' }}>
+                    <Sparkles size={15} aria-hidden="true" style={{ flexShrink: 0, marginTop: '3px' }} />
+                    {product.customizationNotes || 'Gift inscriptions and custom sizes available on request.'}
+                  </span>
                 </div>
               )}
             </div>
 
-            {/* Quantity Selector & Add to Cart */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-full)', backgroundColor: '#fff' }}>
-                  <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    disabled={quantity <= 1 || isOutOfStock}
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      background: 'none',
-                      border: 'none',
-                      fontSize: '1.2rem',
-                      cursor: 'pointer',
-                      fontWeight: '700',
-                      color: 'var(--color-forest-green)'
-                    }}
-                  >
-                    -
-                  </button>
-                  <span style={{ width: '40px', textAlign: 'center', fontWeight: '700', fontSize: '1rem' }}>
-                    {quantity}
-                  </span>
-                  <button
-                    onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                    disabled={quantity >= product.stock || isOutOfStock}
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      background: 'none',
-                      border: 'none',
-                      fontSize: '1.2rem',
-                      cursor: 'pointer',
-                      fontWeight: '700',
-                      color: 'var(--color-forest-green)'
-                    }}
-                  >
-                    +
-                  </button>
-                </div>
-
-                <div style={{ fontSize: '0.85rem' }}>
-                  {isOutOfStock ? (
-                    <span style={{ color: 'var(--color-error)', fontWeight: '700' }}>Out of Stock</span>
-                  ) : isLowStock ? (
-                    <span style={{ color: 'var(--color-terracotta)', fontWeight: '700' }}>
-                      Only {product.stock} items available!
-                    </span>
-                  ) : (
-                    <span style={{ color: 'var(--color-success)', fontWeight: '600' }}>
-                      In Stock ({product.stock} available)
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            {/* Quantity stepper */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)' }}>
                 <button
-                  onClick={handleAddToCart}
-                  disabled={isOutOfStock}
-                  className="btn btn-primary btn-lg"
-                  style={{ flex: 1, minWidth: '200px', opacity: isOutOfStock ? 0.5 : 1 }}
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  disabled={quantity <= 1 || isOutOfStock}
+                  className="btn-icon"
+                  aria-label="Decrease quantity"
                 >
-                  <ShoppingBag size={20} />
-                  <span>{isOutOfStock ? 'Sold Out' : 'Add to Cart'}</span>
+                  <Minus size={16} aria-hidden="true" />
                 </button>
-
-                <button
-                  onClick={() => toggleWishlist(product)}
-                  className={`btn ${inWishlist ? 'btn-secondary' : 'btn-outline'} btn-lg`}
+                <span
+                  style={{ fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 480, minWidth: 32, textAlign: 'center' }}
+                  aria-live="polite"
                 >
-                  <Heart size={20} fill={inWishlist ? '#fff' : 'none'} />
-                  <span>{inWishlist ? 'In Wishlist' : 'Wishlist'}</span>
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
+                  disabled={quantity >= product.stock || isOutOfStock}
+                  className="btn-icon"
+                  aria-label="Increase quantity"
+                >
+                  <Plus size={16} aria-hidden="true" />
                 </button>
               </div>
+              <span className="t-caption">Quantity</span>
             </div>
 
-            {/* Trust Assurances */}
+            {/* Primary actions */}
+            <div className="btn-row">
+              <button
+                onClick={handleAddToCart}
+                disabled={isOutOfStock || addingToCart}
+                className="btn btn-primary btn-lg"
+                style={{ flex: 1, minWidth: 200 }}
+              >
+                {addingToCart ? <span className="spinner-sm" /> : <ShoppingBag size={18} aria-hidden="true" />}
+                <span>{isOutOfStock ? 'Sold out' : addingToCart ? 'Adding…' : 'Add to basket'}</span>
+              </button>
+              <button
+                onClick={() => toggleWishlist(product)}
+                aria-label={inWishlist ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+                aria-pressed={inWishlist}
+                className={inWishlist ? 'btn-icon btn-icon-primary' : 'btn-icon'}
+                style={{ width: 52, height: 52, minWidth: 52, minHeight: 52, border: inWishlist ? '1px solid var(--color-primary)' : '1px solid var(--color-hairline)', background: inWishlist ? undefined : 'var(--color-canvas)' }}
+              >
+                <Heart
+                  size={18}
+                  color={inWishlist ? 'var(--color-on-primary)' : 'var(--color-ink)'}
+                  fill={inWishlist ? 'var(--color-on-primary)' : 'none'}
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
+
+            {/* Artisan attribution tile */}
+            {product.shop && (
+              <div className="card-tile" style={{ padding: 'var(--space-md)', display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+                <Store size={18} aria-hidden="true" style={{ flexShrink: 0 }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p className="t-caption" style={{ margin: 0 }}>The maker</p>
+                  <p style={{ margin: 'var(--space-xxs) 0 0 0', fontWeight: 480, overflowWrap: 'anywhere' }}>
+                    {product.shop.shopName}
+                  </p>
+                </div>
+                {product.shop.contactDetails?.city && (
+                  <span className="t-caption">{product.shop.contactDetails.city}</span>
+                )}
+              </div>
+            )}
+
+            {/* Trust assurances */}
             <div
               style={{
-                borderTop: '1px solid var(--color-border-subtle)',
-                paddingTop: '1.5rem',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                gap: '1rem',
-                fontSize: '0.82rem',
-                color: 'var(--color-text-muted)'
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 'var(--space-sm)',
+                paddingTop: 'var(--space-md)',
+                borderTop: '1px solid var(--color-hairline)'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Truck size={18} color="var(--color-forest-green)" />
-                <span>Pan-India tracked courier</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <ShieldCheck size={18} color="var(--color-forest-green)" />
-                <span>Verified craft authenticity</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <RotateCcw size={18} color="var(--color-forest-green)" />
-                <span>7-day artisan replacement</span>
-              </div>
+              <span className="t-body-sm" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)' }}>
+                <Truck size={16} aria-hidden="true" /> Pan-India tracked courier
+              </span>
+              <span className="t-body-sm" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)' }}>
+                <ShieldCheck size={16} aria-hidden="true" /> Verified craft authenticity
+              </span>
+              <span className="t-body-sm" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)' }}>
+                <RotateCcw size={16} aria-hidden="true" /> 7-day artisan replacement
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Customer Reviews Section */}
-        <div
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--color-border)',
-            padding: '2.5rem',
-            marginBottom: '4rem',
-            boxShadow: 'var(--shadow-subtle)'
-          }}
-        >
+        {/* Customer reviews — white canvas */}
+        <section style={{ marginBottom: 'var(--space-section)' }}>
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center',
+              alignItems: 'flex-end',
               flexWrap: 'wrap',
-              gap: '1rem',
-              marginBottom: '2rem',
-              borderBottom: '1px solid var(--color-border-subtle)',
-              paddingBottom: '1.25rem'
+              gap: 'var(--space-md)',
+              marginBottom: 'var(--space-lg)'
             }}
           >
             <div>
-              <h2 style={{ fontSize: '1.8rem', margin: 0 }}>Customer Reviews</h2>
-              <p style={{ margin: '4px 0 0 0', color: 'var(--color-text-muted)' }}>
-                Verified purchaser feedback for this item
-              </p>
+              <p className="t-caption" style={{ margin: '0 0 var(--space-xxs) 0' }}>Verified purchase feedback</p>
+              <h2 className="t-headline" style={{ margin: 0 }}>Customer reviews</h2>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ fontSize: '2rem', fontWeight: '800', color: 'var(--color-forest-green)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)' }}>
+              <div className="stat-value" style={{ fontSize: 26 }}>
                 {product.averageRating > 0 ? product.averageRating.toFixed(1) : '5.0'}
               </div>
               <div>
-                <div style={{ display: 'flex', color: '#E89E36' }}>
+                <div style={{ display: 'flex', color: 'var(--color-star)' }} aria-hidden="true">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={15} fill="#E89E36" />
+                    <Star key={i} size={14} fill="var(--color-star)" />
                   ))}
                 </div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
+                <p className="t-caption" style={{ margin: 'var(--space-xxs) 0 0 0' }}>
                   {reviews.length} reviews
-                </div>
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Review Submission Form (Only for Verified Buyers) */}
+          {/* Review submission form (verified buyers only) */}
           {isAuthenticated ? (
             reviewEligibility.eligible ? (
-              <form
-                onSubmit={handleReviewSubmit}
-                style={{
-                  backgroundColor: 'var(--color-cream-light)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '1.5rem',
-                  marginBottom: '2.5rem'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-success)', fontWeight: '700', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-                  <CheckCircle2 size={18} />
-                  <span>Verified Purchase: Share your experience with this craft</span>
-                </div>
+              <form onSubmit={handleReviewSubmit} className="card-tile" style={{ padding: 'var(--space-lg)', marginBottom: 'var(--space-lg)' }}>
+                <p
+                  className="t-body-sm"
+                  style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)', margin: '0 0 var(--space-md) 0', fontWeight: 480 }}
+                >
+                  <CheckCircle2 size={17} color="var(--color-semantic-success)" aria-hidden="true" />
+                  Verified purchase — share your experience with this craft
+                </p>
 
                 <div className="form-group">
-                  <label className="form-label">Rating</label>
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                  <span className="form-label" id="review-rating-label">Rating</span>
+                  <div role="radiogroup" aria-labelledby="review-rating-label" style={{ display: 'flex', gap: 'var(--space-xxs)' }}>
                     {[1, 2, 3, 4, 5].map((num) => (
                       <button
                         type="button"
                         key={num}
                         onClick={() => setReviewRating(num)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          padding: '4px'
-                        }}
+                        aria-label={`Rate ${num} star${num > 1 ? 's' : ''}`}
+                        className="btn-icon btn-icon-ghost"
+                        style={{ width: 32, height: 32, minWidth: 32, minHeight: 32 }}
                       >
                         <Star
-                          size={24}
-                          fill={num <= reviewRating ? '#E89E36' : 'none'}
-                          color="#E89E36"
+                          size={20}
+                          fill={num <= reviewRating ? 'var(--color-star)' : 'none'}
+                          color="var(--color-star)"
+                          aria-hidden="true"
                         />
                       </button>
                     ))}
@@ -589,10 +503,11 @@ const ProductDetailsPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Your Review</label>
+                  <label className="form-label" htmlFor="review-comment">Your review</label>
                   <textarea
+                    id="review-comment"
                     rows={3}
-                    placeholder="Describe the craft quality, packaging, textures, and sensory feel..."
+                    placeholder="Describe the craft quality, packaging, textures, and sensory feel…"
                     value={reviewComment}
                     onChange={(e) => setReviewComment(e.target.value)}
                     className="form-textarea"
@@ -601,119 +516,116 @@ const ProductDetailsPage = () => {
                 </div>
 
                 <button type="submit" disabled={submittingReview} className="btn btn-secondary">
-                  <span>{submittingReview ? 'Submitting...' : 'Post Verified Review'}</span>
+                  {submittingReview && <span className="spinner-sm" />}
+                  <span>{submittingReview ? 'Submitting…' : 'Post verified review'}</span>
                 </button>
               </form>
             ) : reviewEligibility.reason === 'already_reviewed' ? (
               <div
+                className="card-tile"
                 style={{
-                  backgroundColor: 'var(--color-forest-subtle)',
-                  padding: '1rem 1.25rem',
-                  borderRadius: 'var(--radius-md)',
-                  fontSize: '0.88rem',
-                  color: 'var(--color-forest-green)',
+                  padding: 'var(--space-sm) var(--space-md)',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  marginBottom: '2rem'
+                  gap: 'var(--space-xs)',
+                  color: 'var(--color-semantic-success)',
+                  marginBottom: 'var(--space-lg)'
                 }}
               >
-                <CheckCircle2 size={18} />
-                <span>You have reviewed this handcrafted item. Thank you for supporting our artisans!</span>
+                <CheckCircle2 size={17} aria-hidden="true" style={{ flexShrink: 0 }} />
+                <span className="t-body-sm">
+                  You have reviewed this handcrafted item. Thank you for supporting our artisans!
+                </span>
               </div>
             ) : (
               <div
+                className="card-tile"
                 style={{
-                  backgroundColor: 'var(--color-cream-light)',
-                  padding: '1rem 1.25rem',
-                  borderRadius: 'var(--radius-md)',
-                  fontSize: '0.88rem',
-                  color: 'var(--color-text-muted)',
+                  padding: 'var(--space-sm) var(--space-md)',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  marginBottom: '2rem'
+                  gap: 'var(--space-xs)',
+                  marginBottom: 'var(--space-lg)'
                 }}
               >
-                <ShieldCheck size={18} color="var(--color-forest-green)" />
-                <span>
-                  Reviews are reserved for customers who have ordered this item to maintain genuine artisanal feedback.
+                <ShieldCheck size={17} aria-hidden="true" style={{ flexShrink: 0 }} />
+                <span className="t-body-sm">
+                  Reviews are reserved for customers who have ordered this item, to keep the feedback genuine.
                 </span>
               </div>
             )
           ) : (
-            <div
-              style={{
-                backgroundColor: 'var(--color-cream-light)',
-                padding: '1rem 1.25rem',
-                borderRadius: 'var(--radius-md)',
-                fontSize: '0.88rem',
-                color: 'var(--color-text-muted)',
-                marginBottom: '2rem'
-              }}
-            >
-              Please <Link to="/login" style={{ color: 'var(--color-terracotta)', fontWeight: '700' }}>log in</Link> to write a verified review.
+            <div className="card-tile" style={{ padding: 'var(--space-sm) var(--space-md)', marginBottom: 'var(--space-lg)' }}>
+              <span className="t-body-sm">
+                Please <Link to="/login" className="t-link" style={{ fontSize: 16, fontWeight: 480 }}>log in</Link> to write a
+                verified review.
+              </span>
             </div>
           )}
 
-          {/* Reviews List */}
+          {/* Reviews list */}
           {reviews.length === 0 ? (
-            <p style={{ color: 'var(--color-text-muted)', fontStyle: 'italic', textAlign: 'center', padding: '2rem 0' }}>
-              No reviews yet for this newly crafted item.
-            </p>
+            <div className="empty-state">
+              <div className="empty-icon"><Star size={22} aria-hidden="true" /></div>
+              <p>No reviews yet for this newly crafted item.</p>
+            </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
               {reviews.map((rev) => (
-                <div
-                  key={rev._id}
-                  style={{
-                    borderBottom: '1px solid var(--color-border-subtle)',
-                    paddingBottom: '1.5rem'
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <strong style={{ color: 'var(--color-dark-text)', fontSize: '0.95rem' }}>
-                        {rev.buyerName || 'Verified Patron'}
-                      </strong>
-                      <span className="badge badge-forest" style={{ fontSize: '0.68rem', padding: '2px 8px' }}>
-                        Verified Purchase
-                      </span>
+                <article key={rev._id} className="card" style={{ padding: 'var(--space-md) var(--space-lg)' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: 'var(--space-xxs)',
+                      marginBottom: 'var(--space-xxs)'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)', flexWrap: 'wrap' }}>
+                      <span className="t-caption">{rev.buyerName || 'Verified patron'}</span>
+                      <span className="badge badge-mint">Verified purchase</span>
                     </div>
-                    <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
+                    <span className="t-caption">
                       {new Date(rev.createdAt).toLocaleDateString('en-IN', {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric'
                       })}
-                    </div>
+                    </span>
                   </div>
 
-                  <div style={{ display: 'flex', color: '#E89E36', gap: '3px', marginBottom: '8px' }}>
+                  <div
+                    role="img"
+                    aria-label={`Rated ${rev.rating} out of 5`}
+                    style={{ display: 'flex', color: 'var(--color-star)', gap: 3, marginBottom: 'var(--space-xxs)' }}
+                  >
                     {[...Array(rev.rating)].map((_, i) => (
-                      <Star key={i} size={15} fill="#E89E36" />
+                      <Star key={i} size={14} fill="var(--color-star)" aria-hidden="true" />
                     ))}
                   </div>
 
-                  <p style={{ fontSize: '0.92rem', color: 'var(--color-dark-text)', lineHeight: '1.6' }}>
+                  <p className="t-body-sm" style={{ margin: 0 }}>
                     {rev.comment}
                   </p>
-                </div>
+                </article>
               ))}
             </div>
           )}
-        </div>
+        </section>
 
-        {/* Related Products */}
+        {/* Related products */}
         {product.relatedProducts && product.relatedProducts.length > 0 && (
-          <div>
-            <h2 style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}>More Handcrafted Treasures in {product.category}</h2>
+          <section>
+            <p className="t-caption" style={{ margin: '0 0 var(--space-xxs) 0' }}>More from {product.category}</p>
+            <h2 className="t-headline" style={{ marginBottom: 'var(--space-lg)' }}>More handcrafted treasures</h2>
             <div className="grid-4">
               {product.relatedProducts.map((rel) => (
                 <ProductCard key={rel._id} product={rel} />
               ))}
             </div>
-          </div>
+          </section>
         )}
       </div>
     </div>

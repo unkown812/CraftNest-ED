@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Store, Eye, Save, Sparkles, MapPin, Phone, Mail, Image as ImageIcon } from 'lucide-react';
+import { Eye, Save, MapPin, Image as ImageIcon } from 'lucide-react';
 import api from '../../api/client';
 import { useToast } from '../../context/ToastContext';
 
 const SellerShopPage = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const { addToast } = useToast();
 
@@ -27,6 +28,7 @@ const SellerShopPage = () => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
+        setError('');
         const res = await api.get('/seller/profile');
         if (res.data.success && res.data.profile) {
           setProfile(res.data.profile);
@@ -46,6 +48,7 @@ const SellerShopPage = () => {
         }
       } catch (err) {
         console.error('Error fetching seller profile:', err);
+        setError(err.response?.data?.message || 'Failed to load your shop settings');
       } finally {
         setLoading(false);
       }
@@ -90,54 +93,76 @@ const SellerShopPage = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: '4rem 0', textAlign: 'center' }}>
-        <p>Loading shop settings...</p>
+      <div className="page-loading" style={{ flexDirection: 'column', gap: 'var(--space-sm)' }}>
+        <div className="spinner" />
+        <p className="t-caption">Loading shop settings...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-surface" style={{ marginTop: 'var(--space-lg)' }}>
+        <span>{error}</span>
+        <button onClick={() => { setError(''); window.location.reload(); }} className="btn btn-secondary btn-sm" style={{ marginLeft: 'auto' }}>
+          Retry
+        </button>
       </div>
     );
   }
 
   return (
     <div style={{ maxWidth: '850px' }}>
-      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+      {/* Page header */}
+      <div className="toolbar" style={{ marginBottom: 'var(--space-lg)' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', margin: 0, color: 'var(--color-forest-green)' }}>
-            Artisan Shop Profile
-          </h1>
-          <p style={{ color: 'var(--color-text-muted)', margin: '4px 0 0 0' }}>
+          <p className="t-caption" style={{ marginBottom: 'var(--space-xs)' }}>Storefront</p>
+          <h1 className="t-headline" style={{ margin: 0 }}>Artisan Shop Profile</h1>
+          <p className="t-body-sm" style={{ margin: 'var(--space-xxs) 0 0 0' }}>
             Customize your maker identity, brand story, and contact details
           </p>
         </div>
 
+        <div className="toolbar-spacer" />
         {profile?.slug && (
           <a
             href={`/shop?search=${encodeURIComponent(formData.shopName)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-outline btn-sm"
+            className="btn btn-secondary btn-sm"
           >
-            <Eye size={15} />
+            <Eye size={15} aria-hidden="true" />
             <span>View Public Storefront</span>
           </a>
         )}
       </div>
 
+      {/* Single block-cream intro band */}
+      <div
+        style={{
+          backgroundColor: 'var(--color-block-cream)',
+          border: '1px solid var(--color-hairline)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'var(--space-lg)',
+          marginBottom: 'var(--space-lg)'
+        }}
+      >
+        <p className="t-caption" style={{ marginBottom: 'var(--space-xs)' }}>Your Storefront</p>
+        <p className="t-body" style={{ margin: 0, maxWidth: '640px' }}>
+          This profile shapes your public maker page across CraftNest — customers see your shop name,
+          story, craft speciality, and how to reach your workshop when they visit your storefront.
+        </p>
+      </div>
+
       <form onSubmit={handleSubmit}>
         {/* Basic Brand Info */}
-        <div
-          className="card"
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: 'var(--radius-lg)',
-            padding: '2rem',
-            marginBottom: '2rem'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '0.75rem' }}>
-            <Store size={20} color="var(--color-forest-green)" />
-            <h3 style={{ fontSize: '1.2rem', margin: 0 }}>Shop Identity</h3>
+        <div className="card" style={{ padding: 'var(--space-xl)', marginBottom: 'var(--space-lg)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)', marginBottom: 'var(--space-md)', borderBottom: '1px solid var(--color-hairline-soft)', paddingBottom: 'var(--space-xs)' }}>
+            <ImageIcon size={18} aria-hidden="true" />
+            <h3 className="t-card-title" style={{ margin: 0 }}>Shop Identity</h3>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-md)' }}>
             <div className="form-group" style={{ gridColumn: 'span 2' }}>
               <label className="form-label">Shop Name *</label>
               <input
@@ -152,7 +177,7 @@ const SellerShopPage = () => {
             </div>
 
             <div className="form-group" style={{ gridColumn: 'span 2' }}>
-              <label className="form-label">Artisan Story & Bio</label>
+              <label className="form-label">Artisan Story &amp; Bio</label>
               <textarea
                 rows={4}
                 name="description"
@@ -173,6 +198,15 @@ const SellerShopPage = () => {
                 className="form-input"
                 placeholder="https://..."
               />
+              {formData.logo && (
+                <div className="img-frame" style={{ width: '72px', height: '72px', marginTop: 'var(--space-xs)' }}>
+                  <img
+                    src={formData.logo}
+                    alt="Shop logo preview"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="form-group">
@@ -185,26 +219,27 @@ const SellerShopPage = () => {
                 className="form-input"
                 placeholder="https://..."
               />
+              {formData.banner && (
+                <div className="img-frame" style={{ width: '144px', height: '72px', marginTop: 'var(--space-xs)' }}>
+                  <img
+                    src={formData.banner}
+                    alt="Shop banner preview"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* Business & Location Info */}
-        <div
-          className="card"
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: 'var(--radius-lg)',
-            padding: '2rem',
-            marginBottom: '2rem'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '0.75rem' }}>
-            <MapPin size={20} color="var(--color-forest-green)" />
-            <h3 style={{ fontSize: '1.2rem', margin: 0 }}>Workshop Location & Craft Speciality</h3>
+        <div className="card" style={{ padding: 'var(--space-xl)', marginBottom: 'var(--space-lg)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)', marginBottom: 'var(--space-md)', borderBottom: '1px solid var(--color-hairline-soft)', paddingBottom: 'var(--space-xs)' }}>
+            <MapPin size={18} aria-hidden="true" />
+            <h3 className="t-card-title" style={{ margin: 0 }}>Workshop Location &amp; Craft Speciality</h3>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-md)' }}>
             <div className="form-group" style={{ gridColumn: 'span 2' }}>
               <label className="form-label">Craft Speciality</label>
               <input
@@ -267,8 +302,9 @@ const SellerShopPage = () => {
           </div>
         </div>
 
-        <button type="submit" disabled={saving} className="btn btn-primary btn-lg">
-          <Save size={18} />
+        <button type="submit" disabled={saving} className="btn btn-primary">
+          {saving && <div className="spinner spinner-sm" aria-hidden="true" />}
+          <Save size={16} aria-hidden="true" />
           <span>{saving ? 'Saving Profile...' : 'Save Shop Settings'}</span>
         </button>
       </form>

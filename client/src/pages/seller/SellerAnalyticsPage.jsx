@@ -1,21 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, TrendingUp, Award, IndianRupee, Package, ArrowUpRight } from 'lucide-react';
+import { Award, TrendingUp, IndianRupee, Package, Percent } from 'lucide-react';
 import api from '../../api/client';
+
+const StatCard = ({ icon, label, value, sub }) => (
+  <div className="stat-card">
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-xs)' }}>
+      <span className="stat-label">{label}</span>
+      <span
+        aria-hidden="true"
+        style={{
+          width: '32px',
+          height: '32px',
+          borderRadius: 'var(--radius-full)',
+          backgroundColor: 'var(--color-surface-soft)',
+          color: 'var(--color-ink)',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0
+        }}
+      >
+        {icon}
+      </span>
+    </div>
+    <span className="stat-value">{value}</span>
+    <span className="stat-sub">{sub}</span>
+  </div>
+);
 
 const SellerAnalyticsPage = () => {
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
         setLoading(true);
+        setError('');
         const res = await api.get('/seller/analytics');
         if (res.data.success) {
           setAnalytics(res.data.analytics);
         }
       } catch (err) {
         console.error('Error fetching analytics:', err);
+        setError(err.response?.data?.message || 'Failed to load your analytics');
       } finally {
         setLoading(false);
       }
@@ -26,8 +55,20 @@ const SellerAnalyticsPage = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: '4rem 0', textAlign: 'center' }}>
-        <p>Calculating sales performance...</p>
+      <div className="page-loading" style={{ flexDirection: 'column', gap: 'var(--space-sm)' }}>
+        <div className="spinner" />
+        <p className="t-caption">Calculating sales performance...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-surface" style={{ marginTop: 'var(--space-lg)' }}>
+        <span>{error}</span>
+        <button onClick={() => { setLoading(true); setError(''); window.location.reload(); }} className="btn btn-secondary btn-sm" style={{ marginLeft: 'auto' }}>
+          Retry
+        </button>
       </div>
     );
   }
@@ -35,141 +76,112 @@ const SellerAnalyticsPage = () => {
   const bestSellers = analytics?.bestSellers || [];
 
   return (
-    <div>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', margin: 0, color: 'var(--color-forest-green)' }}>
-          Sales & Product Analytics
-        </h1>
-        <p style={{ color: 'var(--color-text-muted)', margin: '4px 0 0 0' }}>
-          Real sales performance, popular handcrafted creations, and revenue shares
-        </p>
+    <div className="page-stack">
+      {/* Page header */}
+      <div className="toolbar">
+        <div>
+          <p className="t-caption" style={{ marginBottom: 'var(--space-xs)' }}>Performance</p>
+          <h1 className="t-headline" style={{ margin: 0 }}>Sales &amp; Product Analytics</h1>
+          <p className="t-body-sm" style={{ margin: 'var(--space-xxs) 0 0 0' }}>
+            Real sales performance, popular handcrafted creations, and revenue shares
+          </p>
+        </div>
+        <div className="toolbar-spacer" />
       </div>
 
       {/* Overview Stat Cards */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '1.25rem',
-          marginBottom: '2rem'
-        }}
-      >
-        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: '700', textTransform: 'uppercase' }}>
-            Total Items Sold
-          </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-forest-green)', margin: '8px 0 2px 0' }}>
-            {analytics?.totalItemsSold || 0}
-          </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Creations delivered to patrons</div>
-        </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))', gap: 'var(--space-md)' }}>
+        <StatCard
+          icon={<Package size={16} />}
+          label="Total Items Sold"
+          value={analytics?.totalItemsSold || 0}
+          sub="Creations delivered to patrons"
+        />
 
-        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: '700', textTransform: 'uppercase' }}>
-            Gross Sales Value
-          </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-forest-green)', margin: '8px 0 2px 0' }}>
-            ₹{analytics?.totalGrossRevenue?.toLocaleString('en-IN') || 0}
-          </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Total customer spending</div>
-        </div>
+        <StatCard
+          icon={<TrendingUp size={16} />}
+          label="Gross Sales Value"
+          value={`₹${analytics?.totalGrossRevenue?.toLocaleString('en-IN') || 0}`}
+          sub="Total customer spending"
+        />
 
-        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: '700', textTransform: 'uppercase' }}>
-            Platform Fee ({analytics?.commissionPercent || 10}%)
-          </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-text-muted)', margin: '8px 0 2px 0' }}>
-            ₹{analytics?.totalCommission?.toLocaleString('en-IN') || 0}
-          </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Marketplace maintenance & payment gateway</div>
-        </div>
+        <StatCard
+          icon={<Percent size={16} />}
+          label={`Platform Fee (${analytics?.commissionPercent || 10}%)`}
+          value={`₹${analytics?.totalCommission?.toLocaleString('en-IN') || 0}`}
+          sub="Marketplace maintenance & payment gateway"
+        />
 
-        <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff' }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: '700', textTransform: 'uppercase' }}>
-            Net Artisan Payout
-          </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-terracotta)', margin: '8px 0 2px 0' }}>
-            ₹{analytics?.netEarnings?.toLocaleString('en-IN') || 0}
-          </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Your direct earnings</div>
-        </div>
+        <StatCard
+          icon={<IndianRupee size={16} />}
+          label="Net Artisan Payout"
+          value={`₹${analytics?.netEarnings?.toLocaleString('en-IN') || 0}`}
+          sub="Your direct earnings"
+        />
       </div>
 
       {/* Best-selling creations */}
-      <div
-        className="card"
-        style={{
-          backgroundColor: '#fff',
-          borderRadius: 'var(--radius-lg)',
-          padding: '2rem'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '0.75rem' }}>
-          <Award size={20} color="var(--color-terracotta)" />
-          <h3 style={{ fontSize: '1.25rem', margin: 0 }}>Top Performing Artisan Creations</h3>
+      <div className="card" style={{ padding: 'var(--space-xl)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)', marginBottom: 'var(--space-md)', borderBottom: '1px solid var(--color-hairline-soft)', paddingBottom: 'var(--space-xs)' }}>
+          <Award size={18} aria-hidden="true" />
+          <h3 className="t-card-title" style={{ margin: 0 }}>Top Performing Artisan Creations</h3>
         </div>
 
         {bestSellers.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)', fontStyle: 'italic', padding: '2rem 0', textAlign: 'center' }}>
-            Analytics will populate once orders are processed.
-          </p>
+          <div className="empty-state">
+            <div className="empty-icon">
+              <Award size={24} aria-hidden="true" />
+            </div>
+            <p>Analytics will populate once orders are processed.</p>
+          </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {bestSellers.map((item, idx) => (
-              <div
-                key={idx}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '12px 16px',
-                  borderRadius: 'var(--radius-md)',
-                  backgroundColor: 'var(--color-cream-light)',
-                  border: '1px solid var(--color-border-subtle)'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      backgroundColor: idx === 0 ? '#FFD700' : idx === 1 ? '#C0C0C0' : '#CD7F32',
-                      color: '#000',
-                      fontWeight: '800',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    #{idx + 1}
-                  </div>
-                  {item.image && (
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      style={{ width: '44px', height: '44px', borderRadius: '6px', objectFit: 'cover' }}
-                    />
-                  )}
-                  <div>
-                    <div style={{ fontWeight: '700', fontSize: '0.95rem', color: 'var(--color-dark-text)' }}>
-                      {item.name}
-                    </div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                      {item.unitsSold} units purchased by patrons
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontWeight: '800', fontSize: '1.1rem', color: 'var(--color-forest-green)' }}>
-                    ₹{item.revenue.toLocaleString('en-IN')}
-                  </div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>Gross Generated</div>
-                </div>
-              </div>
-            ))}
+          <div className="table-wrap">
+            <div className="table-scroll">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Creation</th>
+                    <th>Units Sold</th>
+                    <th style={{ textAlign: 'right' }}>Gross Generated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bestSellers.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        <span className={`badge ${idx === 0 ? 'badge-selected' : 'badge-outline'}`}>
+                          {`#${idx + 1}`}
+                        </span>
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+                          {item.image && (
+                            <div className="img-frame" style={{ width: '44px', height: '44px', flexShrink: 0 }}>
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              />
+                            </div>
+                          )}
+                          <div>
+                            <div style={{ fontWeight: 540 }}>{item.name}</div>
+                            <div className="t-caption" style={{ marginTop: 'var(--space-xxs)' }}>
+                              {item.unitsSold} units purchased by patrons
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{item.unitsSold}</td>
+                      <td style={{ textAlign: 'right', fontWeight: 540 }}>
+                        ₹{item.revenue.toLocaleString('en-IN')}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

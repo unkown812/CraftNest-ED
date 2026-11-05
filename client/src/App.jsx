@@ -9,6 +9,7 @@ import { WishlistProvider } from './context/WishlistContext';
 
 // Common Components
 import Navbar from './components/common/Navbar';
+import MobileBottomNav from './components/common/MobileBottomNav';
 import Footer from './components/common/Footer';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
@@ -59,10 +60,12 @@ import AdminReportsPage from './pages/admin/AdminReportsPage';
 const MainLayout = () => (
   <>
     <Navbar />
-    <main style={{ flex: 1 }}>
+    <main className="app-main" style={{ flex: 1 }}>
       <Outlet />
     </main>
     <Footer />
+    {/* Mobile primary navigation — fixed bottom bar, phones & small tablets (< 900px) */}
+    <MobileBottomNav />
   </>
 );
 
@@ -173,14 +176,17 @@ function App() {
                   <Route
                     path="*"
                     element={
-                      <div style={{ textAlign: 'center', padding: '6rem 1rem' }}>
-                        <h1>Page Not Found</h1>
-                        <p style={{ color: 'var(--color-text-muted)', margin: '1rem 0 2rem 0' }}>
-                          The requested handmade page does not exist.
-                        </p>
-                        <a href="/" className="btn btn-primary">
-                          Return Home
-                        </a>
+                      <div className="container section-padding">
+                        <div className="empty-state" style={{ maxWidth: 640, margin: '0 auto' }}>
+                          <span className="empty-icon" aria-hidden="true">🪺</span>
+                          <span className="t-caption">404 · Page not found</span>
+                          <h1 className="t-display-lg">This shelf is empty.</h1>
+                          <p className="t-body">
+                            The requested handmade page does not exist — but our artisans have
+                            thousands of pieces waiting on the shelves one click away.
+                          </p>
+                          <a href="/" className="btn btn-primary">Return home</a>
+                        </div>
                       </div>
                     }
                   />

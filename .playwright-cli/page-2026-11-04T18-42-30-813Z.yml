@@ -1,0 +1,143 @@
+- generic [ref=f6e2]:
+  - banner [ref=f6e3]:
+    - generic [ref=f6e4]:
+      - link "CraftNest home" [ref=f6e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f6e6]: CraftNest
+      - textbox "Search products" [ref=f6e11]:
+        - /placeholder: Search candles, pottery, crochet…
+      - navigation "Primary" [ref=f6e12]:
+        - generic [ref=f6e13]:
+          - link "Shop All" [ref=f6e14] [cursor=pointer]:
+            - /url: /shop
+          - link "Candles" [ref=f6e15] [cursor=pointer]:
+            - /url: /shop?category=Handmade%20Candles
+          - link "Crochet" [ref=f6e16] [cursor=pointer]:
+            - /url: /shop?category=Crochet%20and%20Knitting
+          - link "Sell on CraftNest" [ref=f6e17] [cursor=pointer]:
+            - /url: /become-seller
+      - generic [ref=f6e23]:
+        - link "Wishlist" [ref=f6e24] [cursor=pointer]:
+          - /url: /buyer/wishlist
+        - link "Shopping cart" [ref=f6e27] [cursor=pointer]:
+          - /url: /cart
+        - generic [ref=f6e31]:
+          - link "Log In" [ref=f6e32] [cursor=pointer]:
+            - /url: /login
+          - link "Join" [ref=f6e33] [cursor=pointer]:
+            - /url: /register
+  - generic [ref=f6e35]:
+    - text: Handmade with heart · Free shipping across India on orders above ₹999 ·
+    - link "Explore crafts" [ref=f6e36] [cursor=pointer]:
+      - /url: /shop
+  - main [ref=f6e37]:
+    - generic [ref=f6e38]:
+      - generic [ref=f6e40]:
+        - generic [ref=f6e41]: Artisan community
+        - heading "Turn your craft into a thriving business" [level=1] [ref=f6e42]
+        - paragraph [ref=f6e43]: Join over 100+ independent makers selling handmade candles, crochet, jewellery, pottery, and art across India.
+      - generic [ref=f6e46]:
+        - generic [ref=f6e47]: Why sell with CraftNest
+        - heading "Your studio, our full support." [level=2] [ref=f6e48]
+        - generic [ref=f6e49]:
+          - generic [ref=f6e50]:
+            - heading "Your Custom Storefront" [level=3] [ref=f6e56]
+            - paragraph [ref=f6e57]: Showcase your unique brand identity, artisan bio, and catalogue of creations.
+          - generic [ref=f6e58]:
+            - heading "90% Payout Rate" [level=3] [ref=f6e63]
+            - paragraph [ref=f6e64]: Keep 90% of all gross sales with complete transparent accounting and zero hidden fees.
+          - generic [ref=f6e65]:
+            - heading "Pan-India Patrons" [level=3] [ref=f6e72]
+            - paragraph [ref=f6e73]: Reach conscious buyers seeking personalized gifts and genuine artisanal products.
+        - link "Apply as an Artisan Maker" [ref=f6e75] [cursor=pointer]:
+          - /url: /register?role=seller
+      - generic [ref=f6e80]:
+        - generic [ref=f6e81]: How it works
+        - generic [ref=f6e82]:
+          - generic [ref=f6e83]:
+            - generic [ref=f6e84]: "01"
+            - generic [ref=f6e85]:
+              - generic [ref=f6e86]: Apply as an artisan maker
+              - paragraph [ref=f6e87]: Tell us about your craft, materials, and studio through the artisan registration form.
+          - generic [ref=f6e88]:
+            - generic [ref=f6e89]: "02"
+            - generic [ref=f6e90]:
+              - generic [ref=f6e91]: Get vetted
+              - paragraph [ref=f6e92]: We review every studio for material purity and ethical processes before listing.
+          - generic [ref=f6e93]:
+            - generic [ref=f6e94]: "03"
+            - generic [ref=f6e95]:
+              - generic [ref=f6e96]: Open your storefront
+              - paragraph [ref=f6e97]: Upload your catalogue and start selling to conscious buyers across India.
+  - contentinfo [ref=f6e98]:
+    - generic [ref=f6e99]:
+      - generic [ref=f6e100]:
+        - generic [ref=f6e101]: CraftNest
+        - paragraph [ref=f6e102]: CraftNest connects home-based creators and independent artisans with conscious shoppers looking for one-of-a-kind handmade treasures.
+        - link "support@craftnest.in" [ref=f6e103] [cursor=pointer]:
+          - /url: mailto:support@craftnest.in
+        - generic [ref=f6e107]: Mumbai, Maharashtra, India
+      - generic [ref=f6e111]:
+        - navigation "Categories" [ref=f6e112]:
+          - list [ref=f6e114]:
+            - listitem [ref=f6e115]:
+              - link "Handmade Candles" [ref=f6e116] [cursor=pointer]:
+                - /url: /shop?category=Handmade%20Candles
+            - listitem [ref=f6e117]:
+              - link "Artisanal Jewellery" [ref=f6e118] [cursor=pointer]:
+                - /url: /shop?category=Jewellery
+            - listitem [ref=f6e119]:
+              - link "Crochet & Knitting" [ref=f6e120] [cursor=pointer]:
+                - /url: /shop?category=Crochet%20and%20Knitting
+            - listitem [ref=f6e121]:
+              - link "Pottery & Home Décor" [ref=f6e122] [cursor=pointer]:
+                - /url: /shop?category=Home%20D%C3%A9cor
+            - listitem [ref=f6e123]:
+              - link "Paintings & Art" [ref=f6e124] [cursor=pointer]:
+                - /url: /shop?category=Paintings%20and%20Art
+            - listitem [ref=f6e125]:
+              - link "Curated Gift Hampers" [ref=f6e126] [cursor=pointer]:
+                - /url: /shop?category=Gift%20Hampers
+        - navigation "Customer care" [ref=f6e127]:
+          - generic [ref=f6e128]: Customer Care
+          - list [ref=f6e129]:
+            - listitem [ref=f6e130]:
+              - link "About CraftNest" [ref=f6e131] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=f6e132]:
+              - link "Become a Seller" [ref=f6e133] [cursor=pointer]:
+                - /url: /become-seller
+            - listitem [ref=f6e134]:
+              - link "Shipping & Delivery Policy" [ref=f6e135] [cursor=pointer]:
+                - /url: /shipping-policy
+            - listitem [ref=f6e136]:
+              - link "Returns & Cancellations" [ref=f6e137] [cursor=pointer]:
+                - /url: /returns-policy
+            - listitem [ref=f6e138]:
+              - link "Privacy & Data Policy" [ref=f6e139] [cursor=pointer]:
+                - /url: /privacy-policy
+            - listitem [ref=f6e140]:
+              - link "Contact Artisan Support" [ref=f6e141] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f6e142]:
+          - generic [ref=f6e143]: CraftNest Stories
+          - paragraph [ref=f6e144]: Receive stories from independent makers, secret artisan discounts, and new collection launches.
+          - generic [ref=f6e145]:
+            - generic [ref=f6e146]:
+              - textbox "Email address for newsletter" [ref=f6e147]:
+                - /placeholder: Your email address
+              - button "Subscribe to newsletter" [ref=f6e148] [cursor=pointer]
+            - generic [ref=f6e152] [cursor=pointer]:
+              - checkbox "I agree to receive handmade inspiration and accept the privacy policy." [ref=f6e153]
+              - generic [ref=f6e154]: I agree to receive handmade inspiration and accept the privacy policy.
+      - separator [ref=f6e155]
+      - generic [ref=f6e156]:
+        - generic [ref=f6e157]: © 2026 CraftNest · Handmade with heart · All rights reserved
+        - generic [ref=f6e160]:
+          - link "Privacy" [ref=f6e161] [cursor=pointer]:
+            - /url: /privacy-policy
+          - link "Terms" [ref=f6e162] [cursor=pointer]:
+            - /url: /returns-policy
+          - link "Shipping" [ref=f6e163] [cursor=pointer]:
+            - /url: /shipping-policy
+  - status

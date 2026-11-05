@@ -10,3 +10,4 @@ yarn-error.log*
 .vscode
 public/uploads/*
 !public/uploads/.gitkeep
+.playright-cli

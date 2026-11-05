@@ -12,7 +12,7 @@ import {
   Package,
   LogOut,
   ChevronDown,
-  Sparkles
+  Plus
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
@@ -45,298 +45,107 @@ const Navbar = () => {
   };
 
   return (
-    <header style={{ position: 'sticky', top: 0, zIndex: 1000, width: '100%' }}>
-      {/* Top Announcement Bar */}
-      <div
-        style={{
-          backgroundColor: 'var(--color-forest-dark)',
-          color: 'var(--color-warm-cream)',
-          fontSize: '0.82rem',
-          padding: '7px 1rem',
-          textAlign: 'center',
-          fontWeight: '500',
-          letterSpacing: '0.04em',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px'
-        }}
-      >
-        <Sparkles size={14} color="#D4AF37" />
-        <span>Handmade with Heart • Free shipping across India on orders above ₹999</span>
-        <span style={{ opacity: 0.6, margin: '0 6px' }}>|</span>
-        <Link
-          to="/shop"
-          style={{
-            color: '#F7F1DF',
-            textDecoration: 'underline',
-            fontWeight: '600'
-          }}
-        >
-          Explore Crafts
-        </Link>
-      </div>
-
-      {/* Main Navbar */}
-      <nav
-        style={{
-          backgroundColor: 'rgba(247, 241, 223, 0.96)',
-          backdropFilter: 'blur(10px)',
-          borderBottom: '1px solid var(--color-border)',
-          transition: 'all 0.3s ease'
-        }}
-      >
-        <div
-          className="container"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: '78px',
-            gap: '1.5rem'
-          }}
-        >
-          {/* Brand Logo */}
-          <Link
-            to="/"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              textDecoration: 'none',
-              flexShrink: 0
-            }}
-          >
-            <img
-              src="/assets/craftnest-logo.svg"
-              alt="CraftNest — Handmade with Heart"
-              style={{
-                height: '48px',
-                width: 'auto',
-                display: 'block'
-              }}
-            />
+    <>
+      {/* {components.top-nav} — sticky white bar, 64px chrome */}
+      <header className="top-nav">
+        <div className="container top-nav-inner">
+          {/* Wordmark */}
+          <Link to="/" aria-label="CraftNest home" style={{ flexShrink: 0 }}>
+            <span className="wordmark">
+              <img src="/favicon.png" alt="" className="wordmark-hat-img" aria-hidden="true" />
+              CraftNest
+            </span>
           </Link>
 
-          {/* Desktop Search Bar */}
+          {/* Desktop search */}
           <form
             onSubmit={handleSearchSubmit}
-            style={{
-              flex: 1,
-              maxWidth: '460px',
-              position: 'relative',
-              display: 'none',
-              margin: '0 1rem'
-            }}
-            className="desktop-search-form"
+            className="nav-desktop-search"
+            style={{ position: 'relative', maxWidth: '400px', width: '100%' }}
           >
             <input
               type="text"
-              placeholder="Search candles, pottery, crochet, gifts..."
+              className="nav-search"
+              placeholder="Search candles, pottery, crochet…"
+              aria-label="Search products"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.65rem 1rem 0.65rem 2.6rem',
-                borderRadius: 'var(--radius-full)',
-                border: '1px solid var(--color-border)',
-                backgroundColor: 'var(--color-cream-light)',
-                fontSize: '0.9rem',
-                outline: 'none',
-                fontFamily: 'var(--font-sans)',
-                color: 'var(--color-dark-text)'
-              }}
             />
             <Search
-              size={18}
+              size={16}
+              aria-hidden="true"
               style={{
                 position: 'absolute',
-                left: '12px',
+                left: '14px',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                color: 'var(--color-text-muted)',
+                color: 'var(--color-ink)',
                 pointerEvents: 'none'
               }}
             />
           </form>
 
-          {/* Nav Links */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1.5rem',
-              fontWeight: '600',
-              fontSize: '0.95rem'
-            }}
-            className="desktop-nav-links"
-          >
-            <Link
-              to="/shop"
-              style={{
-                color: location.pathname === '/shop' ? 'var(--color-terracotta)' : 'var(--color-dark-text)',
-                transition: 'color 0.2s ease'
-              }}
-            >
-              Shop All
-            </Link>
-
-            <Link
-              to="/shop?category=Handmade%20Candles"
-              style={{
-                color: 'var(--color-dark-text)'
-              }}
-            >
-              Candles
-            </Link>
-
-            <Link
-              to="/shop?category=Crochet%20and%20Knitting"
-              style={{
-                color: 'var(--color-dark-text)'
-              }}
-            >
-              Crochet
-            </Link>
-
-            {!isSeller && !isAdmin && (
+          {/* Desktop links */}
+          <nav className="nav-desktop-links" aria-label="Primary">
+            <div className="nav-links">
               <Link
-                to="/become-seller"
-                style={{
-                  color: 'var(--color-forest-green)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px'
-                }}
+                to="/shop"
+                className={`nav-link${location.pathname === '/shop' ? ' is-active' : ''}`}
               >
-                <Store size={16} />
-                <span>Sell on CraftNest</span>
+                Shop All
               </Link>
-            )}
-          </div>
+              <Link to="/shop?category=Handmade%20Candles" className="nav-link">
+                Candles
+              </Link>
+              <Link to="/shop?category=Crochet%20and%20Knitting" className="nav-link">
+                Crochet
+              </Link>
+              {!isSeller && !isAdmin && (
+                <Link to="/become-seller" className="nav-link" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <Store size={15} aria-hidden="true" />
+                  <span>Sell on CraftNest</span>
+                </Link>
+              )}
+            </div>
+          </nav>
 
-          {/* Right Action Icons & Auth */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-            {/* Wishlist */}
+          {/* Right actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
             <Link
               to="/buyer/wishlist"
               className="btn-icon"
-              style={{
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--color-dark-text)',
-                backgroundColor: 'var(--color-soft-beige)',
-                borderRadius: '50%',
-                width: '42px',
-                height: '42px'
-              }}
-              title="Wishlist"
+              aria-label={`Wishlist${wishlistCount ? `, ${wishlistCount} items` : ''}`}
             >
-              <Heart size={20} />
-              {wishlistCount > 0 && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '-3px',
-                    right: '-3px',
-                    backgroundColor: 'var(--color-terracotta)',
-                    color: '#fff',
-                    borderRadius: '50%',
-                    fontSize: '0.72rem',
-                    fontWeight: '700',
-                    width: '19px',
-                    height: '19px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  {wishlistCount}
-                </span>
-              )}
+              <Heart size={18} aria-hidden="true" />
+              {wishlistCount > 0 && <span className="nav-count-badge">{wishlistCount}</span>}
             </Link>
 
-            {/* Cart */}
             <Link
               to="/cart"
-              className="btn-icon"
-              style={{
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#fff',
-                backgroundColor: 'var(--color-forest-green)',
-                borderRadius: '50%',
-                width: '42px',
-                height: '42px'
-              }}
-              title="Shopping Cart"
+              className="btn-icon btn-icon-ghost"
+              aria-label={`Shopping cart${cartCount ? `, ${cartCount} items` : ''}`}
             >
-              <ShoppingBag size={20} />
-              {cartCount > 0 && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '-4px',
-                    right: '-4px',
-                    backgroundColor: 'var(--color-terracotta)',
-                    color: '#fff',
-                    borderRadius: '50%',
-                    fontSize: '0.72rem',
-                    fontWeight: '700',
-                    width: '20px',
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  {cartCount}
-                </span>
-              )}
+              <ShoppingBag size={18} aria-hidden="true" />
+              {cartCount > 0 && <span className="nav-count-badge">{cartCount}</span>}
             </Link>
 
-            {/* User Account Dropdown / Login */}
             {isAuthenticated ? (
               <div style={{ position: 'relative' }}>
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    backgroundColor: 'var(--color-white)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-full)',
-                    padding: '5px 12px 5px 6px',
-                    cursor: 'pointer',
-                    fontFamily: 'var(--font-sans)'
-                  }}
+                  aria-expanded={userDropdownOpen}
+                  aria-haspopup="menu"
+                  className="btn btn-ghost"
+                  style={{ padding: '4px 10px 4px 4px', minHeight: 40 }}
                 >
-                  <div
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--color-forest-light)',
-                      color: '#fff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: '700',
-                      fontSize: '0.85rem'
-                    }}
-                  >
+                  <span className="avatar" style={{ width: 30, height: 30, fontSize: 13 }}>
                     {user?.name ? user.name[0].toUpperCase() : 'U'}
-                  </div>
+                  </span>
                   <span
                     style={{
-                      fontSize: '0.88rem',
-                      fontWeight: '600',
-                      color: 'var(--color-dark-text)',
-                      maxWidth: '90px',
+                      fontSize: 14,
+                      fontWeight: 480,
+                      maxWidth: 90,
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap'
@@ -344,276 +153,143 @@ const Navbar = () => {
                   >
                     {user?.name?.split(' ')[0]}
                   </span>
-                  <ChevronDown size={14} color="var(--color-text-muted)" />
+                  <ChevronDown size={14} aria-hidden="true" />
                 </button>
 
-                {/* Dropdown Menu */}
                 {userDropdownOpen && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      top: '115%',
-                      width: '220px',
-                      backgroundColor: '#fff',
-                      borderRadius: 'var(--radius-md)',
-                      boxShadow: 'var(--shadow-floating)',
-                      border: '1px solid var(--color-border-subtle)',
-                      padding: '8px 0',
-                      zIndex: 1010
-                    }}
-                  >
-                    <div
-                      style={{
-                        padding: '10px 16px',
-                        borderBottom: '1px solid var(--color-border-subtle)'
-                      }}
-                    >
-                      <div style={{ fontWeight: '700', fontSize: '0.92rem', color: 'var(--color-dark-text)' }}>
-                        {user.name}
-                      </div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
-                        {user.email}
-                      </div>
-                      <span
-                        className={`badge ${
-                          user.role === 'admin'
-                            ? 'badge-terracotta'
-                            : user.role === 'seller'
-                            ? 'badge-forest'
-                            : 'badge-cream'
-                        }`}
-                        style={{ marginTop: '6px' }}
-                      >
+                  <div className="menu-popover" role="menu">
+                    <div className="menu-popover-head">
+                      <span style={{ fontSize: 15, fontWeight: 540 }}>{user.name}</span>
+                      <span className="caption" style={{ wordBreak: 'break-all' }}>{user.email}</span>
+                      <span className={`badge ${
+                        user.role === 'admin' ? 'badge-navy' : user.role === 'seller' ? 'badge-mint' : 'badge-cream'
+                      }`} style={{ alignSelf: 'flex-start' }}>
                         {user.role}
                       </span>
                     </div>
 
-                    {/* Buyer links */}
-                    <Link
-                      to="/buyer/orders"
-                      onClick={() => setUserDropdownOpen(false)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        padding: '10px 16px',
-                        fontSize: '0.88rem',
-                        color: 'var(--color-dark-text)'
-                      }}
-                    >
-                      <Package size={16} /> My Orders
+                    <Link to="/buyer/orders" role="menuitem" className="menu-item" onClick={() => setUserDropdownOpen(false)}>
+                      <Package size={16} aria-hidden="true" /> My Orders
+                    </Link>
+                    <Link to="/buyer/dashboard" role="menuitem" className="menu-item" onClick={() => setUserDropdownOpen(false)}>
+                      <UserIcon size={16} aria-hidden="true" /> Account Profile
                     </Link>
 
-                    <Link
-                      to="/buyer/dashboard"
-                      onClick={() => setUserDropdownOpen(false)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        padding: '10px 16px',
-                        fontSize: '0.88rem',
-                        color: 'var(--color-dark-text)'
-                      }}
-                    >
-                      <UserIcon size={16} /> Account Profile
-                    </Link>
-
-                    {/* Seller Link */}
                     {isSeller && (
-                      <Link
-                        to="/seller/dashboard"
-                        onClick={() => setUserDropdownOpen(false)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
-                          padding: '10px 16px',
-                          fontSize: '0.88rem',
-                          color: 'var(--color-forest-green)',
-                          fontWeight: '600',
-                          backgroundColor: 'var(--color-forest-subtle)'
-                        }}
-                      >
-                        <Store size={16} /> Seller Studio
+                      <Link to="/seller/dashboard" role="menuitem" className="menu-item" style={{ fontWeight: 540 }} onClick={() => setUserDropdownOpen(false)}>
+                        <Store size={16} aria-hidden="true" /> Seller Studio
                       </Link>
                     )}
-
-                    {/* Admin Link */}
                     {isAdmin && (
-                      <Link
-                        to="/admin/dashboard"
-                        onClick={() => setUserDropdownOpen(false)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
-                          padding: '10px 16px',
-                          fontSize: '0.88rem',
-                          color: 'var(--color-terracotta)',
-                          fontWeight: '600',
-                          backgroundColor: 'var(--color-terracotta-light)'
-                        }}
-                      >
-                        <ShieldCheck size={16} /> Admin Panel
+                      <Link to="/admin/dashboard" role="menuitem" className="menu-item" style={{ fontWeight: 540 }} onClick={() => setUserDropdownOpen(false)}>
+                        <ShieldCheck size={16} aria-hidden="true" /> Admin Panel
                       </Link>
                     )}
 
-                    <div style={{ borderTop: '1px solid var(--color-border-subtle)', margin: '4px 0' }} />
-
-                    <button
-                      onClick={handleLogout}
-                      style={{
-                        width: '100%',
-                        textAlign: 'left',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        padding: '10px 16px',
-                        fontSize: '0.88rem',
-                        color: 'var(--color-error)',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <LogOut size={16} /> Log Out
+                    <hr className="menu-rule" />
+                    <button onClick={handleLogout} className="menu-item menu-item--danger">
+                      <LogOut size={16} aria-hidden="true" /> Log Out
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Link to="/login" className="btn btn-outline btn-sm">
-                  Log In
-                </Link>
-                <Link to="/register" className="btn btn-primary btn-sm">
-                  Join
-                </Link>
+              <div className="nav-auth-desktop">
+                <Link to="/login" className="btn btn-ghost">Log In</Link>
+                <Link to="/register" className="btn btn-primary btn-sm">Join</Link>
               </div>
             )}
 
-            {/* Mobile Hamburger Button */}
+            {/* Mobile hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              style={{
-                display: 'none',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: 'var(--color-forest-green)',
-                padding: '6px'
-              }}
-              className="mobile-hamburger-btn"
-              aria-label="Toggle navigation menu"
+              className="btn-icon btn-icon-ghost nav-mobile-toggle"
+              aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+              {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Mobile overlay menu — full-canvas */}
         {mobileMenuOpen && (
-          <div
+          <nav
             style={{
-              backgroundColor: 'var(--color-warm-cream)',
-              borderTop: '1px solid var(--color-border)',
-              padding: '1.25rem',
+              borderTop: '1px solid var(--color-hairline)',
+              padding: 'var(--space-md) var(--container-gutter) var(--space-lg) var(--container-gutter)',
               display: 'flex',
               flexDirection: 'column',
-              gap: '1rem'
+              gap: '4px',
+              background: 'var(--color-canvas)'
             }}
+            aria-label="Mobile"
           >
-            {/* Mobile Search */}
-            <form onSubmit={handleSearchSubmit} style={{ position: 'relative' }}>
+            <form onSubmit={handleSearchSubmit} style={{ position: 'relative', marginBottom: '12px' }}>
               <input
                 type="text"
-                placeholder="Search handmade items..."
+                className="nav-search"
+                placeholder="Search handmade items…"
+                aria-label="Search products"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 1rem 0.75rem 2.6rem',
-                  borderRadius: 'var(--radius-full)',
-                  border: '1px solid var(--color-border)',
-                  backgroundColor: '#fff',
-                  fontSize: '0.9rem'
-                }}
               />
               <Search
-                size={18}
-                style={{
-                  position: 'absolute',
-                  left: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: 'var(--color-text-muted)'
-                }}
+                size={16}
+                aria-hidden="true"
+                style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
               />
             </form>
 
-            <Link
-              to="/shop"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{ fontSize: '1.05rem', fontWeight: '600' }}
-            >
+            <Link to="/shop" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: 17, fontWeight: 480, padding: '10px 0' }}>
               Explore All Crafts
             </Link>
-            <Link
-              to="/shop?category=Handmade%20Candles"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{ fontSize: '1.05rem' }}
-            >
+            <Link to="/shop?category=Handmade%20Candles" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: 17, fontWeight: 330, padding: '10px 0' }}>
               Handmade Candles
             </Link>
-            <Link
-              to="/shop?category=Jewellery"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{ fontSize: '1.05rem' }}
-            >
+            <Link to="/shop?category=Jewellery" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: 17, fontWeight: 330, padding: '10px 0' }}>
               Jewellery
             </Link>
-            <Link
-              to="/shop?category=Crochet%20and%20Knitting"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{ fontSize: '1.05rem' }}
-            >
-              Crochet & Knitting
+            <Link to="/shop?category=Crochet%20and%20Knitting" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: 17, fontWeight: 330, padding: '10px 0' }}>
+              Crochet &amp; Knitting
             </Link>
-            <Link
-              to="/shop?category=Home%20D%C3%A9cor"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{ fontSize: '1.05rem' }}
-            >
+            <Link to="/shop?category=Home%20D%C3%A9cor" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: 17, fontWeight: 330, padding: '10px 0' }}>
               Home Décor
             </Link>
-            <Link
-              to="/become-seller"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                fontSize: '1.05rem',
-                fontWeight: '600',
-                color: 'var(--color-forest-green)'
-              }}
-            >
-              Become a Seller
-            </Link>
-          </div>
-        )}
-      </nav>
 
-      {/* Responsive CSS styling for nav */}
-      <style>{`
-        @media (min-width: 820px) {
-          .desktop-search-form { display: block !important; }
-        }
-        @media (max-width: 820px) {
-          .desktop-nav-links { display: none !important; }
-          .mobile-hamburger-btn { display: block !important; }
-        }
-      `}</style>
-    </header>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderTop: '1px solid var(--color-hairline-soft)', paddingTop: '16px' }}>
+              {!isAuthenticated && (
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn btn-secondary" style={{ flex: 1 }}>
+                    Log In
+                  </Link>
+                  <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary" style={{ flex: 1 }}>
+                    Join CraftNest
+                  </Link>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <Link to="/become-seller" onClick={() => setMobileMenuOpen(false)} className="btn btn-secondary" style={{ flex: 1 }}>
+                  Become a Seller
+                </Link>
+                <Link to="/shop" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary" style={{ flex: 1 }}>
+                  <Plus size={16} aria-hidden="true" /> Shop
+                </Link>
+              </div>
+            </div>
+          </nav>
+        )}
+      </header>
+
+      {/* {components.marquee-strip} — thin black ribbon directly under the nav */}
+      <div className="marquee-strip">
+        <span>
+          Handmade with heart · Free shipping across India on orders above ₹999 ·{' '}
+          <Link to="/shop">Explore crafts</Link>
+        </span>
+      </div>
+    </>
   );
 };
 

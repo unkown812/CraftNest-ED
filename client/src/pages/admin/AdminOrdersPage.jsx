@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Search, Filter } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 import api from '../../api/client';
 
 const AdminOrdersPage = () => {
@@ -30,101 +30,99 @@ const AdminOrdersPage = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: '4rem 0', textAlign: 'center' }}>
-        <p>Loading all marketplace transactions...</p>
+      <div className="page-loading">
+        <div className="spinner" />
       </div>
     );
   }
 
+  const orderStatusBadge = (status) =>
+    status === 'Delivered' ? 'badge-success' : status === 'Cancelled' ? 'badge-error' : 'badge-cream';
+
   return (
-    <div>
-      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h1 style={{ fontSize: '2rem', margin: 0, color: 'var(--color-forest-green)' }}>
-            Marketplace Orders Monitor ({orders.length})
+    <div className="page-stack" style={{ gap: 'var(--space-lg)' }}>
+      {/* Page header + status filter */}
+      <div className="toolbar">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xxs)' }}>
+          <span className="t-caption">Admin console</span>
+          <h1 className="t-headline" style={{ margin: 0 }}>
+            Marketplace Orders Monitor
           </h1>
-          <p style={{ color: 'var(--color-text-muted)', margin: '4px 0 0 0' }}>
+          <p className="t-body-sm w330" style={{ margin: 0 }}>
             Inspect all transactions, order statuses, and platform commission breakdown
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--color-text-muted)' }}>Status:</span>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="form-select"
-            style={{ width: 'auto', fontSize: '0.88rem', padding: '6px 12px' }}
-          >
-            <option value="">All Statuses</option>
-            <option value="Confirmed">Confirmed</option>
-            <option value="Processing">Processing</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Delivered">Delivered</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
+        <div className="toolbar-spacer" />
+
+        <div className="toolbar">
+          <span className="badge badge-neutral">{orders.length} transactions</span>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="t-caption" htmlFor="order-status-filter">
+              Status
+            </label>
+            <select
+              id="order-status-filter"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="form-select"
+              style={{ width: 'auto', minHeight: '36px', padding: '6px 30px 6px 12px' }}
+            >
+              <option value="">All Statuses</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Processing">Processing</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <div
-        className="card"
-        style={{
-          backgroundColor: '#fff',
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'hidden'
-        }}
-      >
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+      {/* Orders ledger */}
+      <div className="table-wrap">
+        <div className="table-scroll">
+          <table className="table">
             <thead>
-              <tr style={{ backgroundColor: 'var(--color-cream-light)', borderBottom: '1px solid var(--color-border)' }}>
-                <th style={{ padding: '12px 16px' }}>Order Ref</th>
-                <th style={{ padding: '12px 16px' }}>Date</th>
-                <th style={{ padding: '12px 16px' }}>Buyer Name</th>
-                <th style={{ padding: '12px 16px' }}>Gross Total</th>
-                <th style={{ padding: '12px 16px' }}>Platform Cut</th>
-                <th style={{ padding: '12px 16px' }}>Artisan Payout</th>
-                <th style={{ padding: '12px 16px' }}>Payment</th>
-                <th style={{ padding: '12px 16px' }}>Order Status</th>
+              <tr>
+                <th>Order Ref</th>
+                <th>Date</th>
+                <th>Buyer Name</th>
+                <th>Gross Total</th>
+                <th>Platform Cut</th>
+                <th>Artisan Payout</th>
+                <th>Payment</th>
+                <th>Order Status</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((ord) => (
-                <tr key={ord._id} style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: '700', color: 'var(--color-forest-green)' }}>
-                    #{ord.orderNumber}
-                  </td>
-                  <td style={{ padding: '12px 16px', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>
+                <tr key={ord._id}>
+                  <td className="t-body-sm w480">#{ord.orderNumber}</td>
+                  <td className="t-body-sm w330">
                     {new Date(ord.createdAt).toLocaleDateString('en-IN')}
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
+                  <td className="t-body-sm w480">
                     {ord.buyerId?.name || ord.shippingAddressSnapshot?.fullName || 'Customer'}
                   </td>
-                  <td style={{ padding: '12px 16px', fontWeight: '700' }}>
-                    ₹{ord.total.toLocaleString('en-IN')}
+                  <td className="t-body-sm w540">₹{ord.total.toLocaleString('en-IN')}</td>
+                  <td>
+                    <span className="t-caption">
+                      ₹{(ord.commissionAmount || Math.round(ord.subtotal * 0.1)).toLocaleString('en-IN')}
+                    </span>
                   </td>
-                  <td style={{ padding: '12px 16px', color: 'var(--color-terracotta)', fontWeight: '700' }}>
-                    ₹{(ord.commissionAmount || Math.round(ord.subtotal * 0.1)).toLocaleString('en-IN')}
+                  <td>
+                    <span className="t-caption">
+                      ₹{(ord.sellerEarnings || Math.round(ord.subtotal * 0.9)).toLocaleString('en-IN')}
+                    </span>
                   </td>
-                  <td style={{ padding: '12px 16px', color: 'var(--color-forest-green)', fontWeight: '600' }}>
-                    ₹{(ord.sellerEarnings || Math.round(ord.subtotal * 0.9)).toLocaleString('en-IN')}
-                  </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span className="badge badge-cream" style={{ fontSize: '0.7rem' }}>
+                  <td>
+                    <span className="badge badge-neutral">
                       {ord.paymentMethod} ({ord.paymentStatus})
                     </span>
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span
-                      className={`badge ${
-                        ord.orderStatus === 'Delivered'
-                          ? 'badge-success'
-                          : ord.orderStatus === 'Cancelled'
-                          ? 'badge-error'
-                          : 'badge-forest'
-                      }`}
-                      style={{ fontSize: '0.72rem' }}
-                    >
+                  <td>
+                    <span className={`badge ${orderStatusBadge(ord.orderStatus)}`}>
                       {ord.orderStatus}
                     </span>
                   </td>
@@ -133,6 +131,20 @@ const AdminOrdersPage = () => {
             </tbody>
           </table>
         </div>
+
+        {orders.length === 0 && (
+          <div style={{ padding: '0 var(--space-lg) var(--space-xl)' }}>
+            <div className="empty-state">
+              <span className="empty-icon">
+                <ShoppingBag size={22} aria-hidden="true" />
+              </span>
+              <h3 className="t-headline">No transactions found</h3>
+              <p className="t-body-sm w330">
+                Marketplace orders will appear here once customers complete checkouts.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

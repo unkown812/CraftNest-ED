@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Sparkles,
   ArrowRight,
-  Heart,
-  Star,
-  Flame,
   CheckCircle,
-  Users,
-  Gift,
-  ShieldCheck,
-  ShoppingBag
+  Star
 } from 'lucide-react';
 import api from '../../api/client';
 import ProductCard from '../../components/common/ProductCard';
@@ -64,6 +57,19 @@ const CATEGORIES_LIST = [
     img: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80',
     color: '#E8EFEA'
   }
+];
+
+/* Chips assigned via block-* badge surfaces — the legacy hex `color` field is
+   no longer used for backgrounds. */
+const CATEGORY_BADGES = [
+  'badge-forest',
+  'badge-mint',
+  'badge-pink',
+  'badge-terracotta',
+  'badge-cream',
+  'badge-coral',
+  'badge-forest',
+  'badge-mint'
 ];
 
 const ARTISANS = [
@@ -123,6 +129,35 @@ const TESTIMONIALS = [
   }
 ];
 
+/* Presentation-only editorial content for the lime craft-systems block */
+const SYSTEM_STEPS = [
+  {
+    label: 'Step 01',
+    title: 'Sourced by hand',
+    desc: 'Artisans gather soy wax, raw terracotta clay, organic cotton and reclaimed teak from trusted local suppliers.'
+  },
+  {
+    label: 'Step 02',
+    title: 'Slow-crafted in home studios',
+    desc: 'Poured, knotted, thrown and painted in small batches — never on assembly lines.'
+  },
+  {
+    label: 'Step 03',
+    title: 'Inspected & shipped with care',
+    desc: 'Every order is quality-checked, wrapped in sustainable protective packaging, then tracked to your door.'
+  }
+];
+
+/* Presentation-only gifting notes for the navy block */
+const GIFT_NOTES = [
+  { tone: '', label: 'Bestseller', text: 'Engraved teak wood nameplates' },
+  { tone: 'sticky-note--lilac', label: 'Made to order', text: 'Embroidered monogram keepsakes' },
+  { tone: 'sticky-note--pink', label: 'New arrivals', text: 'Pressed-flower greeting sets' },
+  { tone: '', label: 'Festive pick', text: 'Curated self-care gift hampers' }
+];
+
+const HERO_TRUST_POINTS = ['100% Authentic Handmade', 'Direct Artisan Support', 'Secure Pan-India Delivery'];
+
 const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
@@ -149,255 +184,149 @@ const HomePage = () => {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section
-        style={{
-          position: 'relative',
-          padding: '4.5rem 0 5.5rem 0',
-          overflow: 'hidden',
-          background: 'linear-gradient(135deg, #F7F1DF 0%, #EDE4CE 60%, #E3D4B6 100%)',
-          borderBottom: '1px solid var(--color-border)'
-        }}
-      >
+      {/* Hero — white canvas, oversized display type */}
+      <section style={{ padding: 'var(--space-section) 0 var(--space-xxl) 0' }}>
         <div className="container">
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-              gap: '3.5rem',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+              gap: 'var(--space-xxl)',
               alignItems: 'center'
             }}
           >
-            {/* Left Hero Text */}
+            {/* Left hero text */}
             <div>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: 'rgba(53, 75, 54, 0.1)',
-                  color: 'var(--color-forest-green)',
-                  padding: '6px 14px',
-                  borderRadius: 'var(--radius-full)',
-                  fontSize: '0.82rem',
-                  fontWeight: '700',
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  marginBottom: '1.25rem'
-                }}
-              >
-                <Sparkles size={14} color="var(--color-terracotta)" />
-                <span>Handmade with Heart</span>
-              </div>
+              <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-sm)' }}>
+                Handmade with heart
+              </span>
 
-              <h1
-                style={{
-                  fontSize: 'clamp(2.5rem, 5vw, 3.8rem)',
-                  fontWeight: '800',
-                  color: 'var(--color-forest-green)',
-                  lineHeight: '1.15',
-                  marginBottom: '1.25rem',
-                  letterSpacing: '-0.02em'
-                }}
-              >
-                Discover <br />
-                <span style={{ color: 'var(--color-terracotta)', fontStyle: 'italic' }}>
-                  Handmade
-                </span> Treasures.
-              </h1>
+              <h1 className="t-display-xl">Discover handmade treasures.</h1>
 
-              <p
-                style={{
-                  fontSize: '1.15rem',
-                  color: 'var(--color-text-muted)',
-                  lineHeight: '1.65',
-                  marginBottom: '2.2rem',
-                  maxWidth: '520px'
-                }}
-              >
+              <p className="t-body-lg" style={{ maxWidth: '540px', margin: 'var(--space-lg) 0 var(--space-xl)' }}>
                 Unique creations, crafted with care by independent makers. Direct from the hands and hearts of local
                 potters, weavers, candle artisans, and creators across India.
               </p>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+              <div className="btn-row">
                 <Link to="/shop" className="btn btn-primary btn-lg">
-                  <ShoppingBag size={18} />
-                  <span>Shop Now</span>
+                  <span>Shop handmade</span>
                 </Link>
-
                 <Link to="/become-seller" className="btn btn-secondary btn-lg">
-                  <span>Become a Seller</span>
-                  <ArrowRight size={18} />
+                  <span>Become a seller</span>
+                  <ArrowRight size={18} aria-hidden="true" />
                 </Link>
               </div>
 
-              {/* Artisan Trust Points */}
+              {/* Artisan trust points */}
               <div
                 style={{
                   display: 'flex',
                   flexWrap: 'wrap',
-                  gap: '1.5rem',
-                  marginTop: '2.8rem',
-                  paddingTop: '1.8rem',
-                  borderTop: '1px solid rgba(41, 45, 41, 0.12)',
-                  fontSize: '0.85rem',
-                  fontWeight: '600',
-                  color: 'var(--color-dark-text)'
+                  gap: 'var(--space-lg)',
+                  marginTop: 'var(--space-xl)',
+                  paddingTop: 'var(--space-lg)',
+                  borderTop: '1px solid var(--color-hairline-soft)'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle size={17} color="var(--color-forest-green)" />
-                  <span>100% Authentic Handmade</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle size={17} color="var(--color-forest-green)" />
-                  <span>Direct Artisan Support</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle size={17} color="var(--color-forest-green)" />
-                  <span>Secure Pan-India Delivery</span>
-                </div>
+                {HERO_TRUST_POINTS.map((point) => (
+                  <div key={point} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <CheckCircle size={16} aria-hidden="true" style={{ color: 'var(--color-semantic-success)' }} />
+                    <span className="t-body-sm">{point}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Right Hero Image Card */}
+            {/* Right hero image */}
             <div style={{ position: 'relative' }}>
-              <div
-                style={{
-                  position: 'relative',
-                  borderRadius: 'var(--radius-xl)',
-                  overflow: 'hidden',
-                  boxShadow: 'var(--shadow-floating)',
-                  border: '8px solid rgba(255, 255, 255, 0.85)',
-                  backgroundColor: '#fff'
-                }}
-              >
+              <div className="img-frame" style={{ borderRadius: 'var(--radius-xl)' }}>
                 <img
                   src="/assets/hero-artisan.jpg"
-                  alt="CraftNest Artisan Studio"
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    display: 'block',
-                    objectFit: 'cover'
-                  }}
+                  alt="CraftNest artisan studio"
+                  style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
                 />
+              </div>
 
-                {/* Floating Artisan Badge */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '20px',
-                    left: '20px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.94)',
-                    backdropFilter: 'blur(8px)',
-                    padding: '12px 18px',
-                    borderRadius: 'var(--radius-md)',
-                    boxShadow: 'var(--shadow-card)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    border: '1px solid var(--color-border)'
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--color-terracotta-light)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--color-terracotta)'
-                    }}
-                  >
-                    <Heart size={20} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.92rem', fontWeight: '800', color: 'var(--color-dark-text)' }}>
-                      100+ Master Artisans
-                    </div>
-                    <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
-                      From 22 states across India
-                    </div>
-                  </div>
-                </div>
+              <div
+                className="card-floating"
+                style={{
+                  position: 'absolute',
+                  bottom: 'var(--space-md)',
+                  left: 'var(--space-md)',
+                  padding: 'var(--space-sm) var(--space-md)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--space-xxs)'
+                }}
+              >
+                <span className="t-body-sm w540">100+ Master Artisans</span>
+                <span className="t-caption">From 22 states across India</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Popular Categories Section */}
-      <section className="section-padding" style={{ backgroundColor: 'var(--color-warm-cream)' }}>
+      {/* Popular categories — white canvas grid of soft tiles */}
+      <section className="section-padding">
         <div className="container">
           <div className="section-header">
-            <div className="section-subtitle">Curated Collections</div>
-            <h2 className="section-title">Explore Popular Categories</h2>
-            <p className="section-desc">
-              From scented aromatherapy candles to hand-woven chunky blankets and heritage paintings, every craft tells a story.
+            <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-sm)' }}>
+              Curated collections
+            </span>
+            <h2 className="t-subhead" style={{ marginBottom: 'var(--space-sm)' }}>
+              Explore popular categories
+            </h2>
+            <p className="t-body">
+              From scented aromatherapy candles to hand-woven chunky blankets and heritage paintings, every craft tells
+              a story.
             </p>
           </div>
 
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-              gap: '1.5rem'
+              gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 260px), 1fr))',
+              gap: 'var(--space-lg)'
             }}
           >
-            {CATEGORIES_LIST.map((cat) => (
+            {CATEGORIES_LIST.map((cat, idx) => (
               <Link
                 key={cat.name}
                 to={`/shop?category=${encodeURIComponent(cat.name)}`}
-                className="card"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  textDecoration: 'none',
-                  backgroundColor: cat.color,
-                  border: '1px solid var(--color-border-subtle)',
-                  transition: 'all 0.3s ease'
-                }}
+                className="card-tile is-clickable"
+                style={{ display: 'flex', flexDirection: 'column', textDecoration: 'none' }}
               >
-                <div style={{ height: '170px', overflow: 'hidden' }}>
+                <div style={{ height: '170px', overflow: 'hidden', borderBottom: '1px solid var(--color-hairline)' }}>
                   <img
                     src={cat.img}
                     alt={cat.name}
                     loading="lazy"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      transition: 'transform 0.4s ease'
-                    }}
                     className="product-img-hover"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </div>
-                <div style={{ padding: '1.2rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
-                  <div>
-                    <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem', color: 'var(--color-forest-green)' }}>
-                      {cat.name}
-                    </h3>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', lineHeight: '1.4' }}>
-                      {cat.desc}
-                    </p>
-                  </div>
-                  <div
-                    style={{
-                      marginTop: '1rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      fontSize: '0.85rem',
-                      fontWeight: '700',
-                      color: 'var(--color-terracotta)'
-                    }}
+                <div
+                  style={{
+                    padding: 'var(--space-md)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 'var(--space-xs)',
+                    flex: 1
+                  }}
+                >
+                  <span className={`badge ${CATEGORY_BADGES[idx % CATEGORY_BADGES.length]}`} style={{ alignSelf: 'flex-start' }}>
+                    {cat.name}
+                  </span>
+                  <p className="t-body-sm">{cat.desc}</p>
+                  <span
+                    className="t-caption"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: 'auto' }}
                   >
-                    <span>Browse collection</span>
-                    <ArrowRight size={14} />
-                  </div>
+                    Browse collection
+                    <ArrowRight size={14} aria-hidden="true" />
+                  </span>
                 </div>
               </Link>
             ))}
@@ -405,149 +334,191 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Featured Handmade Products */}
-      <section className="section-padding" style={{ backgroundColor: 'var(--color-cream-light)' }}>
+      {/* Craft-systems story — lime color block */}
+      <section className="section-padding">
         <div className="container">
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              marginBottom: '2.5rem',
-              flexWrap: 'wrap',
-              gap: '1rem'
-            }}
-          >
-            <div>
-              <div className="section-subtitle">Artisan Highlights</div>
-              <h2 className="section-title" style={{ margin: 0 }}>Featured Handmade Products</h2>
-            </div>
-            <Link to="/shop?featured=true" className="btn btn-outline">
-              <span>View All Featured</span>
-              <ArrowRight size={16} />
-            </Link>
-          </div>
-
-          <div className="grid-4">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Personalized Gifts Banner */}
-      <section
-        style={{
-          padding: '4rem 0',
-          backgroundColor: 'var(--color-forest-green)',
-          color: '#fff',
-          position: 'relative'
-        }}
-      >
-        <div className="container">
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '3rem',
-              alignItems: 'center'
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  backgroundColor: 'rgba(247, 241, 223, 0.15)',
-                  color: 'var(--color-warm-cream)',
-                  padding: '4px 12px',
-                  borderRadius: 'var(--radius-full)',
-                  fontSize: '0.8rem',
-                  fontWeight: '700',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  marginBottom: '1rem'
-                }}
-              >
-                <Gift size={14} color="#D4AF37" />
-                <span>Meaningful Gifting</span>
-              </div>
-
-              <h2 style={{ color: '#fff', fontSize: '2.4rem', lineHeight: '1.2', marginBottom: '1rem' }}>
-                Handcrafted & Personalized Gifts for Every Occasion
+          <div className="color-block block-lime">
+            <div style={{ maxWidth: '760px' }}>
+              <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-sm)' }}>
+                How the craft is made
+              </span>
+              <h2 className="t-display-lg" style={{ marginBottom: 'var(--space-md)' }}>
+                Every piece starts long before it sells.
               </h2>
-
-              <p style={{ color: '#D5DFD5', fontSize: '1.05rem', lineHeight: '1.6', marginBottom: '2rem' }}>
-                Make weddings, birthdays, and anniversaries unforgettable. Many of our makers offer custom engravings,
-                embroidered monograms, and personalized calligraphy messages.
+              <p className="t-body" style={{ marginBottom: 'var(--space-xl)' }}>
+                No factories, no molds, no rush. Each craft on CraftNest follows a slow, transparent system from source
+                material to your doorstep.
               </p>
 
-              <Link to="/shop?category=Personalized%20Gifts" className="btn btn-secondary btn-lg">
-                <span>Explore Personalized Gifts</span>
-                <ArrowRight size={18} />
-              </Link>
-            </div>
-
-            <div>
               <div
                 style={{
-                  borderRadius: 'var(--radius-lg)',
-                  overflow: 'hidden',
-                  boxShadow: 'var(--shadow-floating)',
-                  border: '4px solid rgba(255, 255, 255, 0.2)'
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
+                  gap: 'var(--space-lg)'
                 }}
               >
-                <img
-                  src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=800&q=80"
-                  alt="Personalized Handmade Gift Hampers"
-                  style={{ width: '100%', height: 'auto', display: 'block' }}
-                />
+                {SYSTEM_STEPS.map((step) => (
+                  <div key={step.label} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
+                    <span className="t-caption">{step.label}</span>
+                    <h3 style={{ fontSize: '20px', margin: 0 }}>{step.title}</h3>
+                    <p className="t-body-sm">{step.desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trending Products */}
-      <section className="section-padding" style={{ backgroundColor: 'var(--color-warm-cream)' }}>
+      {/* Featured handmade products — white canvas */}
+      <section className="section-padding">
         <div className="container">
           <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              marginBottom: '2.5rem',
-              flexWrap: 'wrap',
-              gap: '1rem'
-            }}
+            className="toolbar"
+            style={{ justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--space-xl)' }}
           >
             <div>
-              <div className="section-subtitle">Community Favorites</div>
-              <h2 className="section-title" style={{ margin: 0 }}>Trending in the Nest</h2>
+              <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-sm)' }}>
+                Artisan highlights
+              </span>
+              <h2 className="t-subhead" style={{ margin: 0 }}>
+                Featured handmade products
+              </h2>
             </div>
-            <Link to="/shop?sort=popular" className="btn btn-outline">
-              <span>View All Trending</span>
-              <ArrowRight size={16} />
+            <Link to="/shop?featured=true" className="btn btn-ghost">
+              <span>View all featured</span>
+              <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </div>
 
-          <div className="grid-4">
-            {trendingProducts.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
+          {loading ? (
+            <div className="page-loading">
+              <div className="spinner" />
+            </div>
+          ) : featuredProducts.length === 0 ? (
+            <div className="empty-state">
+              <h3>Nothing featured yet</h3>
+              <p>New artisan pieces land every week — browse the full shop in the meantime.</p>
+              <Link to="/shop" className="btn btn-secondary">
+                <span>Browse the shop</span>
+              </Link>
+            </div>
+          ) : (
+            <div className="grid-4">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Trending products — white canvas */}
+      <section className="section-padding">
+        <div className="container">
+          <div
+            className="toolbar"
+            style={{ justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--space-xl)' }}
+          >
+            <div>
+              <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-sm)' }}>
+                Community favorites
+              </span>
+              <h2 className="t-subhead" style={{ margin: 0 }}>
+                Trending in the nest
+              </h2>
+            </div>
+            <Link to="/shop?sort=popular" className="btn btn-ghost">
+              <span>View all trending</span>
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+
+          {loading ? (
+            <div className="page-loading">
+              <div className="spinner" />
+            </div>
+          ) : trendingProducts.length === 0 ? (
+            <div className="empty-state">
+              <h3>No trending pieces yet</h3>
+              <p>Once the community starts favoriting, the most-loved creations will show up here.</p>
+              <Link to="/shop?sort=popular" className="btn btn-secondary">
+                <span>Browse the shop</span>
+              </Link>
+            </div>
+          ) : (
+            <div className="grid-4">
+              {trendingProducts.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Gifting story — navy color block with sticky-note accents */}
+      <section className="section-padding">
+        <div className="container">
+          <div className="color-block block-navy">
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+                gap: 'var(--space-xxl)',
+                alignItems: 'center'
+              }}
+            >
+              <div>
+                <span
+                  className="t-caption"
+                  style={{ display: 'block', marginBottom: 'var(--space-sm)', color: 'var(--color-inverse-ink)' }}
+                >
+                  Meaningful gifting
+                </span>
+
+                <h2 className="t-display-lg" style={{ marginBottom: 'var(--space-md)' }}>
+                  Handcrafted & personalized gifts for every occasion
+                </h2>
+
+                <p className="t-body" style={{ marginBottom: 'var(--space-xl)' }}>
+                  Make weddings, birthdays, and anniversaries unforgettable. Many of our makers offer custom engravings,
+                  embroidered monograms, and personalized calligraphy messages.
+                </p>
+
+                <div className="btn-row">
+                  <Link to="/shop?category=Personalized%20Gifts" className="btn btn-secondary btn-lg">
+                    <span>Explore personalized gifts</span>
+                    <ArrowRight size={18} aria-hidden="true" />
+                  </Link>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)', maxWidth: '340px', justifySelf: 'center' }}>
+                {GIFT_NOTES.map((note) => (
+                  <div key={note.text} className={`sticky-note${note.tone ? ` ${note.tone}` : ''}`}>
+                    <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-xs)' }}>
+                      {note.label}
+                    </span>
+                    <span className="t-body-sm">{note.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Local Artisans */}
-      <section className="section-padding" style={{ backgroundColor: 'var(--color-cream-light)' }}>
+      {/* Featured local artisans — white canvas */}
+      <section className="section-padding">
         <div className="container">
           <div className="section-header">
-            <div className="section-subtitle">Meet the Makers</div>
-            <h2 className="section-title">Featured Local Artisans</h2>
-            <p className="section-desc">
+            <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-sm)' }}>
+              Meet the makers
+            </span>
+            <h2 className="t-subhead" style={{ marginBottom: 'var(--space-sm)' }}>
+              Featured local artisans
+            </h2>
+            <p className="t-body">
               Behind every product is a dedicated craftsman, independent artist, or home maker honing their slow craft.
             </p>
           </div>
@@ -555,8 +526,8 @@ const HomePage = () => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '2rem'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+              gap: 'var(--space-xl)'
             }}
           >
             {ARTISANS.map((artisan) => (
@@ -564,54 +535,45 @@ const HomePage = () => {
                 key={artisan.shopName}
                 className="card"
                 style={{
-                  padding: '2rem',
+                  padding: 'var(--space-xl) var(--space-lg)',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   textAlign: 'center',
-                  gap: '1.2rem',
-                  backgroundColor: '#fff'
+                  gap: 'var(--space-md)'
                 }}
               >
                 <div
                   style={{
-                    width: '100px',
-                    height: '100px',
-                    borderRadius: '50%',
+                    width: '96px',
+                    height: '96px',
+                    borderRadius: 'var(--radius-full)',
                     overflow: 'hidden',
-                    border: '4px solid var(--color-soft-beige)',
-                    boxShadow: 'var(--shadow-subtle)'
+                    border: '1px solid var(--color-hairline)'
                   }}
                 >
-                  <img
-                    src={artisan.image}
-                    alt={artisan.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
+                  <img src={artisan.image} alt={artisan.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
 
-                <div>
-                  <span className="badge badge-forest" style={{ marginBottom: '8px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
+                  <span className="badge badge-neutral" style={{ alignSelf: 'center' }}>
                     {artisan.craft}
                   </span>
-                  <h3 style={{ fontSize: '1.25rem', margin: '4px 0', color: 'var(--color-forest-green)' }}>
-                    {artisan.shopName}
-                  </h3>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--color-terracotta)', fontWeight: '600' }}>
-                    {artisan.name} • {artisan.city}
-                  </div>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--color-text-muted)', marginTop: '8px' }}>
+                  <h3 style={{ fontSize: '20px', margin: 0 }}>{artisan.shopName}</h3>
+                  <span className="t-body-sm w540">{artisan.name}</span>
+                  <span className="t-caption">{artisan.city}</span>
+                  <p className="t-body-sm" style={{ margin: 0 }}>
                     {artisan.speciality}
                   </p>
                 </div>
 
                 <Link
                   to={`/shop?search=${encodeURIComponent(artisan.name)}`}
-                  className="btn btn-outline btn-sm"
+                  className="btn btn-secondary btn-sm"
                   style={{ width: '100%', marginTop: 'auto' }}
                 >
-                  <span>Visit Shop Storefront</span>
-                  <ArrowRight size={14} />
+                  <span>Visit shop storefront</span>
+                  <ArrowRight size={14} aria-hidden="true" />
                 </Link>
               </div>
             ))}
@@ -619,13 +581,17 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Customer Testimonials */}
-      <section className="section-padding" style={{ backgroundColor: 'var(--color-warm-cream)' }}>
+      {/* Customer testimonials — white canvas */}
+      <section className="section-padding">
         <div className="container">
           <div className="section-header">
-            <div className="section-subtitle">Real Experiences</div>
-            <h2 className="section-title">Loved by Conscious Shoppers</h2>
-            <p className="section-desc">
+            <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-sm)' }}>
+              Real experiences
+            </span>
+            <h2 className="t-subhead" style={{ marginBottom: 'var(--space-sm)' }}>
+              Loved by conscious shoppers
+            </h2>
+            <p className="t-body">
               Read verified feedback from customers who welcomed our handcrafted pieces into their homes.
             </p>
           </div>
@@ -633,8 +599,8 @@ const HomePage = () => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '1.75rem'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+              gap: 'var(--space-lg)'
             }}
           >
             {TESTIMONIALS.map((t, idx) => (
@@ -642,41 +608,30 @@ const HomePage = () => {
                 key={idx}
                 className="card"
                 style={{
-                  padding: '2rem',
+                  padding: 'var(--space-lg)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  backgroundColor: '#fff',
-                  border: '1px solid var(--color-border)'
+                  gap: 'var(--space-md)'
                 }}
               >
                 <div>
-                  <div style={{ display: 'flex', gap: '4px', color: '#E89E36', marginBottom: '1rem' }}>
+                  <div aria-hidden="true" style={{ display: 'flex', gap: 'var(--space-xxs)', color: 'var(--color-star)', marginBottom: 'var(--space-sm)' }}>
                     {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} size={18} fill="#E89E36" />
+                      <Star key={i} size={18} fill="currentColor" />
                     ))}
                   </div>
-                  <p
-                    style={{
-                      fontStyle: 'italic',
-                      color: 'var(--color-dark-text)',
-                      fontSize: '0.98rem',
-                      lineHeight: '1.6',
-                      marginBottom: '1.25rem'
-                    }}
-                  >
+                  <p className="t-body" aria-label={`Rated ${t.rating} out of 5 stars`}>
                     "{t.quote}"
                   </p>
                 </div>
 
-                <div style={{ borderTop: '1px solid var(--color-border-subtle)', paddingTop: '1rem' }}>
-                  <div style={{ fontWeight: '700', color: 'var(--color-forest-green)' }}>{t.name}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                    Verified Buyer • {t.city}
-                  </div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--color-terracotta)', marginTop: '4px' }}>
+                <div style={{ borderTop: '1px solid var(--color-hairline-soft)', paddingTop: 'var(--space-md)' }}>
+                  <div className="t-body-sm w540">{t.name}</div>
+                  <span className="t-caption">Verified buyer • {t.city}</span>
+                  <span className="t-caption" style={{ display: 'block', marginTop: 'var(--space-xxs)' }}>
                     Purchased: {t.product}
-                  </div>
+                  </span>
                 </div>
               </div>
             ))}

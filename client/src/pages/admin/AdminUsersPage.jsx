@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Search, ShieldCheck, UserX, UserCheck, Filter } from 'lucide-react';
+import { Users, Search, RotateCcw } from 'lucide-react';
 import api from '../../api/client';
 import { useToast } from '../../context/ToastContext';
 
@@ -58,135 +58,156 @@ const AdminUsersPage = () => {
     }
   };
 
+  const roleBadge = (role) =>
+    role === 'admin' ? 'badge-navy' : role === 'seller' ? 'badge-mint' : 'badge-cream';
+
+  const statusBadge = (status) => (status === 'active' ? 'badge-success' : 'badge-neutral');
+
   return (
-    <div>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', margin: 0, color: 'var(--color-forest-green)' }}>
-          User Directory & Permissions
-        </h1>
-        <p style={{ color: 'var(--color-text-muted)', margin: '4px 0 0 0' }}>
-          Inspect buyers, artisan sellers, administrators, and manage active status
-        </p>
-      </div>
+    <div className="page-stack" style={{ gap: 'var(--space-lg)' }}>
+      {/* Page header + filters */}
+      <div className="toolbar">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xxs)' }}>
+          <span className="t-caption">Admin console</span>
+          <h1 className="t-headline" style={{ margin: 0 }}>
+            User Directory &amp; Permissions
+          </h1>
+          <p className="t-body-sm w330" style={{ margin: 0 }}>
+            Inspect buyers, artisan sellers, administrators, and manage active status
+          </p>
+        </div>
 
-      {/* Filter and Search Bar */}
-      <div
-        className="card"
-        style={{
-          backgroundColor: '#fff',
-          padding: '1.25rem',
-          borderRadius: 'var(--radius-md)',
-          marginBottom: '1.5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1rem'
-        }}
-      >
-        <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '8px', flex: 1, maxWidth: '400px' }}>
-          <input
-            type="text"
-            placeholder="Search by name or email..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="form-input"
-            style={{ fontSize: '0.88rem' }}
-          />
-          <button type="submit" className="btn btn-sm btn-primary">
-            <Search size={15} />
-          </button>
-        </form>
+        <div className="toolbar-spacer" />
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--color-text-muted)' }}>Role:</span>
-          <select
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            className="form-select"
-            style={{ width: 'auto', fontSize: '0.88rem', padding: '6px 12px' }}
-          >
-            <option value="">All Roles</option>
-            <option value="buyer">Buyers Only</option>
-            <option value="seller">Sellers Only</option>
-            <option value="admin">Admins Only</option>
-          </select>
+        <div className="toolbar">
+          <form onSubmit={handleSearchSubmit} className="toolbar">
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="t-caption" htmlFor="user-search">
+                Search
+              </label>
+              <input
+                id="user-search"
+                type="text"
+                placeholder="Search by name or email..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="form-input"
+                style={{ width: '240px', minHeight: '36px', padding: '6px 14px' }}
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn-icon btn-icon-primary btn-sm"
+              aria-label="Search users"
+              style={{ alignSelf: 'flex-end' }}
+            >
+              <Search size={15} aria-hidden="true" />
+            </button>
+          </form>
+
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="t-caption" htmlFor="role-filter">
+              Role
+            </label>
+            <select
+              id="role-filter"
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="form-select"
+              style={{ width: 'auto', minHeight: '36px', padding: '6px 30px 6px 12px' }}
+            >
+              <option value="">All Roles</option>
+              <option value="buyer">Buyers Only</option>
+              <option value="seller">Sellers Only</option>
+              <option value="admin">Admins Only</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Users Table */}
-      <div
-        className="card"
-        style={{
-          backgroundColor: '#fff',
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'hidden'
-        }}
-      >
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+      {/* Users table */}
+      <div className="table-wrap">
+        <div className="table-scroll">
+          <table className="table">
             <thead>
-              <tr style={{ backgroundColor: 'var(--color-cream-light)', borderBottom: '1px solid var(--color-border)' }}>
-                <th style={{ padding: '12px 16px' }}>Member</th>
-                <th style={{ padding: '12px 16px' }}>Email</th>
-                <th style={{ padding: '12px 16px' }}>Role</th>
-                <th style={{ padding: '12px 16px' }}>Phone</th>
-                <th style={{ padding: '12px 16px' }}>Status</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right' }}>Action</th>
+              <tr>
+                <th>Member</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th style={{ textAlign: 'right' }}>Action</th>
               </tr>
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u._id} style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: '700', color: 'var(--color-dark-text)' }}>
-                    {u.name}
-                  </td>
-                  <td style={{ padding: '12px 16px', color: 'var(--color-text-muted)' }}>{u.email}</td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span
-                      className={`badge ${
-                        u.role === 'admin'
-                          ? 'badge-terracotta'
-                          : u.role === 'seller'
-                          ? 'badge-forest'
-                          : 'badge-cream'
-                      }`}
-                      style={{ fontSize: '0.72rem' }}
-                    >
-                      {u.role}
-                    </span>
-                  </td>
-                  <td style={{ padding: '12px 16px' }}>{u.phone || '—'}</td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span
-                      className={`badge ${u.accountStatus === 'active' ? 'badge-success' : 'badge-error'}`}
-                      style={{ fontSize: '0.72rem' }}
-                    >
-                      {u.accountStatus}
-                    </span>
-                  </td>
-                  <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                    {u.role !== 'admin' && (
-                      <button
-                        onClick={() => handleToggleStatus(u)}
-                        disabled={updatingId === u._id}
-                        className="btn btn-sm btn-outline"
-                        style={{
-                          fontSize: '0.75rem',
-                          padding: '4px 10px',
-                          color: u.accountStatus === 'active' ? 'var(--color-error)' : 'var(--color-success)',
-                          borderColor: u.accountStatus === 'active' ? 'var(--color-error)' : 'var(--color-success)'
-                        }}
+                <tr key={u._id}>
+                  <td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span
+                        className="avatar"
+                        style={{ width: '32px', height: '32px', fontSize: '13px' }}
                       >
-                        {u.accountStatus === 'active' ? 'Suspend' : 'Activate'}
-                      </button>
-                    )}
+                        {u.name ? u.name[0] : 'U'}
+                      </span>
+                      <span className="t-body-sm w480">{u.name}</span>
+                    </div>
+                  </td>
+                  <td className="t-body-sm w330">{u.email}</td>
+                  <td>
+                    <span className={`badge ${roleBadge(u.role)}`}>{u.role}</span>
+                  </td>
+                  <td className="t-body-sm">{u.phone || '—'}</td>
+                  <td>
+                    <span className={`badge ${statusBadge(u.accountStatus)}`}>{u.accountStatus}</span>
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    {u.role !== 'admin' &&
+                      (u.accountStatus === 'active' ? (
+                        <button
+                          onClick={() => handleToggleStatus(u)}
+                          disabled={updatingId === u._id}
+                          className="btn btn-sm btn-danger"
+                          aria-label={`Suspend ${u.name}`}
+                        >
+                          Suspend
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleToggleStatus(u)}
+                          disabled={updatingId === u._id}
+                          className="btn-icon btn-icon-ghost"
+                          aria-label={`Activate ${u.name}`}
+                        >
+                          <RotateCcw size={16} aria-hidden="true" />
+                        </button>
+                      ))}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
+        {loading ? (
+          <div className="page-loading">
+            <div className="spinner" />
+          </div>
+        ) : (
+          users.length === 0 && (
+            <div style={{ padding: '0 var(--space-lg) var(--space-xl)' }}>
+              <div className="empty-state">
+                <span className="empty-icon">
+                  <Users size={22} aria-hidden="true" />
+                </span>
+                <h3 className="t-headline">No members found</h3>
+                <p className="t-body-sm w330">
+                  Try a different name, email, or role filter to locate the member.
+                </p>
+              </div>
+            </div>
+          )
+        )}
       </div>
     </div>
   );

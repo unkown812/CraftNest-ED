@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { User, MapPin, Phone, Mail, Plus, Trash2, CheckCircle, ShieldCheck } from 'lucide-react';
+import { MapPin, Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import api from '../../api/client';
@@ -13,6 +12,8 @@ const BuyerProfilePage = () => {
   const [phone, setPhone] = useState(user?.phone || '');
   const [addresses, setAddresses] = useState(user?.addresses || []);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [savingAddress, setSavingAddress] = useState(false);
+  const [removingIndex, setRemovingIndex] = useState(null);
 
   // New address form modal/toggle
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -51,6 +52,7 @@ const BuyerProfilePage = () => {
     }
 
     try {
+      setSavingAddress(true);
       const updatedAddresses = [...addresses, newAddr];
       const res = await api.patch('/auth/profile', { addresses: updatedAddresses });
       if (res.data.success) {
@@ -71,11 +73,14 @@ const BuyerProfilePage = () => {
       }
     } catch (err) {
       addToast('Failed to save address', 'error');
+    } finally {
+      setSavingAddress(false);
     }
   };
 
   const handleDeleteAddress = async (index) => {
     try {
+      setRemovingIndex(index);
       const updated = addresses.filter((_, i) => i !== index);
       const res = await api.patch('/auth/profile', { addresses: updated });
       if (res.data.success) {
@@ -85,271 +90,344 @@ const BuyerProfilePage = () => {
       }
     } catch (err) {
       addToast('Failed to remove address', 'error');
+    } finally {
+      setRemovingIndex(null);
     }
   };
 
+  const initials = (user?.name || 'CN')
+    .trim()
+    .split(/\s+/)
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
   return (
-    <div style={{ backgroundColor: 'var(--color-warm-cream)', minHeight: '85vh', padding: '3rem 0 6rem 0' }}>
-      <div className="container" style={{ maxWidth: '850px' }}>
-        {/* Title */}
-        <div style={{ marginBottom: '2.5rem' }}>
-          <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '0.35rem' }}>
-            <Link to="/" style={{ color: 'inherit' }}>Home</Link> /{' '}
-            <span style={{ color: 'var(--color-terracotta)', fontWeight: '600' }}>Account Settings</span>
+    <div className="container" style={{ maxWidth: '850px', paddingTop: 'var(--space-xl)', paddingBottom: 'var(--space-xxl)' }}>
+      {/* Header */}
+      <div style={{ marginBottom: 'var(--space-xl)' }}>
+        <p className="t-caption" style={{ marginBottom: 'var(--space-xs)' }}>
+          Account
+        </p>
+        <h1 className="t-display-lg" style={{ marginBottom: 'var(--space-xs)' }}>
+          My account
+        </h1>
+        <p className="t-body-sm">Manage your personal profile and saved delivery addresses</p>
+      </div>
+
+      {/* Profile header card + stats */}
+      <div className="card" style={{ padding: 'var(--space-xl)', marginBottom: 'var(--space-lg)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+          <div className="avatar" style={{ width: '56px', height: '56px', fontSize: '20px' }}>
+            {initials}
           </div>
-          <h1 style={{ fontSize: '2.4rem', margin: 0 }}>My Account</h1>
-          <p style={{ margin: '0.35rem 0 0 0', color: 'var(--color-text-muted)' }}>
-            Manage your personal profile and saved delivery addresses
-          </p>
+          <div style={{ minWidth: 0 }}>
+            <h2 className="t-headline">{user?.name}</h2>
+            <p className="t-caption">{user?.email}</p>
+          </div>
         </div>
 
-        {/* Profile Card */}
-        <div
-          className="card"
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--color-border)',
-            padding: '2rem',
-            marginBottom: '2.5rem',
-            boxShadow: 'var(--shadow-subtle)'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '0.75rem' }}>
-            <User size={20} color="var(--color-forest-green)" />
-            <h3 style={{ fontSize: '1.25rem', margin: 0 }}>Personal Details</h3>
+        <div className="grid-3" style={{ marginTop: 'var(--space-lg)' }}>
+          <div className="stat-card">
+            <span className="stat-label">Saved addresses</span>
+            <span className="stat-value">{addresses.length}</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Account type</span>
+            <span className="stat-value" style={{ textTransform: 'capitalize' }}>
+              {user?.role || 'Buyer'}
+            </span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Phone on file</span>
+            <span className="stat-value">{user?.phone ? 'Set' : '—'}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Personal Details Card */}
+      <div className="card" style={{ padding: 'var(--space-xl)', marginBottom: 'var(--space-lg)' }}>
+        <h3 className="t-headline" style={{ marginBottom: 'var(--space-lg)' }}>
+          Personal details
+        </h3>
+
+        <form onSubmit={handleProfileSave}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
+              gap: 'var(--space-md)',
+              marginBottom: 'var(--space-lg)'
+            }}
+          >
+            <div className="form-group">
+              <label className="form-label" htmlFor="profile-name">
+                Full Name
+              </label>
+              <input
+                id="profile-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="profile-email">
+                Email Address (read-only)
+              </label>
+              <input
+                id="profile-email"
+                type="email"
+                value={user?.email || ''}
+                readOnly
+                className="form-input"
+                style={{ backgroundColor: 'var(--color-surface-soft)' }}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="profile-phone">
+                Phone Number
+              </label>
+              <input
+                id="profile-phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="form-input"
+                placeholder="+91…"
+              />
+            </div>
           </div>
 
-          <form onSubmit={handleProfileSave}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.5rem' }}>
+          <button type="submit" disabled={savingProfile} className="btn btn-primary">
+            {savingProfile ? (
+              <>
+                <div className="spinner-sm" />
+                <span>Saving…</span>
+              </>
+            ) : (
+              <span>Save profile changes</span>
+            )}
+          </button>
+        </form>
+      </div>
+
+      {/* Saved Addresses Card */}
+      <div className="card" style={{ padding: 'var(--space-xl)' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 'var(--space-sm)',
+            marginBottom: 'var(--space-lg)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xxs)' }}>
+            <MapPin size={18} aria-hidden="true" />
+            <h3 className="t-headline">Saved delivery addresses</h3>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowAddressForm(!showAddressForm)}
+            className="btn btn-secondary btn-sm"
+          >
+            <Plus size={15} aria-hidden="true" />
+            <span>Add new address</span>
+          </button>
+        </div>
+
+        {/* New address form */}
+        {showAddressForm && (
+          <form
+            onSubmit={handleAddAddress}
+            className="card-tile"
+            style={{ padding: 'var(--space-lg)', marginBottom: 'var(--space-lg)' }}
+          >
+            <div className="t-body-sm w540" style={{ marginBottom: 'var(--space-md)' }}>
+              Add new address
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-md)', marginBottom: 'var(--space-md)' }}>
               <div className="form-group">
-                <label className="form-label">Full Name</label>
+                <label className="form-label" htmlFor="addr-name">
+                  Full Name
+                </label>
                 <input
+                  id="addr-name"
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={newAddr.fullName}
+                  onChange={(e) => setNewAddr({ ...newAddr, fullName: e.target.value })}
                   className="form-input"
                   required
                 />
               </div>
-
               <div className="form-group">
-                <label className="form-label">Email Address (Read-only)</label>
+                <label className="form-label" htmlFor="addr-phone">
+                  Phone
+                </label>
                 <input
-                  type="email"
-                  value={user?.email || ''}
-                  readOnly
-                  className="form-input"
-                  style={{ backgroundColor: 'var(--color-cream-light)' }}
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Phone Number</label>
-                <input
+                  id="addr-phone"
                   type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  value={newAddr.phone}
+                  onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value })}
                   className="form-input"
-                  placeholder="+91..."
+                  required
                 />
               </div>
-
+              <div className="form-group" style={{ gridColumn: 'span 2' }}>
+                <label className="form-label" htmlFor="addr-street">
+                  Street Address &amp; Flat / House No.
+                </label>
+                <input
+                  id="addr-street"
+                  type="text"
+                  value={newAddr.street}
+                  onChange={(e) => setNewAddr({ ...newAddr, street: e.target.value })}
+                  className="form-input"
+                  required
+                />
+              </div>
               <div className="form-group">
-                <label className="form-label">Account Role</label>
-                <div>
-                  <span className="badge badge-forest" style={{ textTransform: 'capitalize', fontSize: '0.85rem' }}>
-                    {user?.role}
-                  </span>
-                </div>
+                <label className="form-label" htmlFor="addr-city">
+                  City
+                </label>
+                <input
+                  id="addr-city"
+                  type="text"
+                  value={newAddr.city}
+                  onChange={(e) => setNewAddr({ ...newAddr, city: e.target.value })}
+                  className="form-input"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label" htmlFor="addr-state">
+                  State
+                </label>
+                <input
+                  id="addr-state"
+                  type="text"
+                  value={newAddr.state}
+                  onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })}
+                  className="form-input"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label" htmlFor="addr-postal">
+                  Postal / PIN Code
+                </label>
+                <input
+                  id="addr-postal"
+                  type="text"
+                  value={newAddr.postalCode}
+                  onChange={(e) => setNewAddr({ ...newAddr, postalCode: e.target.value })}
+                  className="form-input"
+                  required
+                />
               </div>
             </div>
-
-            <button type="submit" disabled={savingProfile} className="btn btn-primary">
-              <span>{savingProfile ? 'Saving...' : 'Save Profile Changes'}</span>
-            </button>
+            <div className="btn-row">
+              <button type="submit" disabled={savingAddress} className="btn btn-sm btn-primary">
+                {savingAddress ? (
+                  <>
+                    <div className="spinner-sm" />
+                    <span>Saving…</span>
+                  </>
+                ) : (
+                  <span>Save address</span>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowAddressForm(false)}
+                className="btn btn-sm btn-secondary"
+              >
+                Cancel
+              </button>
+            </div>
           </form>
-        </div>
+        )}
 
-        {/* Saved Addresses Card */}
-        <div
-          className="card"
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--color-border)',
-            padding: '2rem',
-            boxShadow: 'var(--shadow-subtle)'
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              borderBottom: '1px solid var(--color-border-subtle)',
-              paddingBottom: '0.75rem',
-              marginBottom: '1.5rem'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <MapPin size={20} color="var(--color-forest-green)" />
-              <h3 style={{ fontSize: '1.25rem', margin: 0 }}>Saved Delivery Addresses</h3>
-            </div>
-            <button
-              onClick={() => setShowAddressForm(!showAddressForm)}
-              className="btn btn-sm btn-outline"
-            >
-              <Plus size={15} />
-              <span>Add New Address</span>
-            </button>
-          </div>
-
-          {/* New address form */}
-          {showAddressForm && (
-            <form
-              onSubmit={handleAddAddress}
-              style={{
-                backgroundColor: 'var(--color-cream-light)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-md)',
-                padding: '1.5rem',
-                marginBottom: '1.75rem'
-              }}
-            >
-              <h4 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Add New Address</h4>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div className="form-group">
-                  <label className="form-label">Full Name</label>
-                  <input
-                    type="text"
-                    value={newAddr.fullName}
-                    onChange={(e) => setNewAddr({ ...newAddr, fullName: e.target.value })}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Phone</label>
-                  <input
-                    type="tel"
-                    value={newAddr.phone}
-                    onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value })}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                  <label className="form-label">Street Address & Flat / House No.</label>
-                  <input
-                    type="text"
-                    value={newAddr.street}
-                    onChange={(e) => setNewAddr({ ...newAddr, street: e.target.value })}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">City</label>
-                  <input
-                    type="text"
-                    value={newAddr.city}
-                    onChange={(e) => setNewAddr({ ...newAddr, city: e.target.value })}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">State</label>
-                  <input
-                    type="text"
-                    value={newAddr.state}
-                    onChange={(e) => setNewAddr({ ...newAddr, state: e.target.value })}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Postal / PIN Code</label>
-                  <input
-                    type="text"
-                    value={newAddr.postalCode}
-                    onChange={(e) => setNewAddr({ ...newAddr, postalCode: e.target.value })}
-                    className="form-input"
-                    required
-                  />
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button type="submit" className="btn btn-sm btn-primary">
-                  Save Address
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAddressForm(false)}
-                  className="btn btn-sm btn-outline"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          )}
-
-          {/* List of addresses */}
-          {addresses.length === 0 ? (
-            <p style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
-              No saved addresses. You can add one above or during checkout.
-            </p>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
-              {addresses.map((addr, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '1.25rem',
-                    backgroundColor: 'var(--color-cream-light)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    gap: '0.75rem'
-                  }}
-                >
+        {/* List of addresses */}
+        {addresses.length === 0 ? (
+          <p className="t-body-sm">
+            No saved addresses yet. Add one above or during checkout.
+          </p>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: 'var(--space-md)' }}>
+            {addresses.map((addr, idx) => (
+              <div
+                key={idx}
+                className="card-tile"
+                style={{
+                  padding: 'var(--space-lg)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  gap: 'var(--space-sm)'
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
                   <div>
-                    <strong style={{ fontSize: '0.95rem', color: 'var(--color-forest-green)' }}>
-                      {addr.fullName}
-                    </strong>
-                    <div style={{ fontSize: '0.85rem', color: 'var(--color-dark-text)', marginTop: '4px' }}>
+                    <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-xxs)' }}>
+                      Recipient
+                    </span>
+                    <div className="t-body-sm w540">{addr.fullName}</div>
+                  </div>
+                  <div>
+                    <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-xxs)' }}>
+                      Address
+                    </span>
+                    <div className="t-body-sm">
                       {addr.street}, {addr.city}, {addr.state} - {addr.postalCode}
                     </div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginTop: '4px' }}>
-                      Phone: {addr.phone}
-                    </div>
                   </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '0.5rem' }}>
-                    <button
-                      onClick={() => handleDeleteAddress(idx)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--color-error)',
-                        fontSize: '0.8rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}
-                    >
-                      <Trash2 size={14} /> Remove
-                    </button>
+                  <div>
+                    <span className="t-caption" style={{ display: 'block', marginBottom: 'var(--space-xxs)' }}>
+                      Phone
+                    </span>
+                    <div className="t-body-sm">{addr.phone}</div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+
+                <div
+                  style={{
+                    borderTop: '1px solid var(--color-hairline-soft)',
+                    paddingTop: 'var(--space-xs)',
+                    display: 'flex',
+                    justifyContent: 'flex-end'
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteAddress(idx)}
+                    disabled={removingIndex === idx}
+                    className="btn btn-danger btn-sm"
+                  >
+                    {removingIndex === idx ? (
+                      <>
+                        <div className="spinner-sm" />
+                        <span>Removing…</span>
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 size={14} aria-hidden="true" />
+                        <span>Remove</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

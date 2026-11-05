@@ -1,0 +1,126 @@
+- generic [ref=f5e2]:
+  - generic [ref=f5e159]:
+    - complementary [ref=f5e160]:
+      - generic [ref=f5e161]:
+        - link "CraftNest home" [ref=f5e162] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f5e163]: CraftNest
+        - button "Close menu" [ref=f5e167] [cursor=pointer]
+      - generic [ref=f5e171]:
+        - generic [ref=f5e172]: Administration
+        - generic [ref=f5e173]: CraftNest Console
+        - generic [ref=f5e174]: Super Admin
+      - navigation "Administration navigation" [ref=f5e175]:
+        - link "Overview" [ref=f5e176] [cursor=pointer]:
+          - /url: /admin/dashboard
+        - link "Sellers & Approvals" [ref=f5e183] [cursor=pointer]:
+          - /url: /admin/sellers
+        - link "User Directory" [ref=f5e189] [cursor=pointer]:
+          - /url: /admin/users
+        - link "Marketplace Orders" [ref=f5e196] [cursor=pointer]:
+          - /url: /admin/orders
+        - link "Revenue & Commission" [ref=f5e201] [cursor=pointer]:
+          - /url: /admin/reports
+      - generic [ref=f5e205]:
+        - link "Marketplace Storefront" [ref=f5e206] [cursor=pointer]:
+          - /url: /shop
+        - button "Log Out" [ref=f5e210] [cursor=pointer]
+    - generic [ref=f5e215]:
+      - banner [ref=f5e216]:
+        - generic [ref=f5e217]:
+          - button "Open navigation menu" [ref=f5e218] [cursor=pointer]
+          - heading "Marketplace Administration & Control" [level=2] [ref=f5e220]
+        - generic [ref=f5e221]: Super Admin
+      - main [ref=f5e225]:
+        - generic [ref=f5e226]:
+          - generic [ref=f5e228]:
+            - generic [ref=f5e229]: Admin console
+            - heading "Marketplace Control Center" [level=1] [ref=f5e230]
+            - paragraph [ref=f5e231]: Platform metrics, seller approvals, revenue, and policy configuration
+          - generic [ref=f5e232]:
+            - generic [ref=f5e233]:
+              - generic [ref=f5e234]: Platform GMV
+              - generic [ref=f5e235]: ₹3,646
+              - generic [ref=f5e236]: Gross merchandise value
+            - generic [ref=f5e237]:
+              - generic [ref=f5e238]: Commission Earned
+              - generic [ref=f5e239]: ₹365
+              - generic [ref=f5e240]: At 10% platform cut
+            - generic [ref=f5e241]:
+              - generic [ref=f5e242]: Makers & Sellers
+              - generic [ref=f5e243]: "3"
+              - generic [ref=f5e244]: All accounts approved
+            - generic [ref=f5e245]:
+              - generic [ref=f5e246]: Marketplace Orders
+              - generic [ref=f5e247]: "2"
+              - generic [ref=f5e248]: Across 6 registered members
+          - generic [ref=f5e249]:
+            - heading "Marketplace Commission Configuration" [level=3] [ref=f5e250]
+            - paragraph [ref=f5e251]: Configure the percentage commission deducted automatically on seller orders to maintain platform operations.
+            - generic [ref=f5e252]:
+              - generic [ref=f5e253]:
+                - generic [ref=f5e254]: Platform Commission (%)
+                - spinbutton "Platform Commission (%)" [ref=f5e255]: "10"
+              - button "Update Commission Rate" [ref=f5e256] [cursor=pointer]
+          - generic [ref=f5e262]:
+            - generic [ref=f5e263]:
+              - generic [ref=f5e264]:
+                - heading "Recent Orders" [level=3] [ref=f5e265]
+                - link "View All" [ref=f5e266] [cursor=pointer]:
+                  - /url: /admin/orders
+              - generic [ref=f5e267]:
+                - generic [ref=f5e268]:
+                  - generic [ref=f5e269]:
+                    - generic [ref=f5e270]: "#CN-202610-1002"
+                    - generic [ref=f5e271]: Rahul Sen • ₹1,799
+                  - generic [ref=f5e272]: Processing
+                - generic [ref=f5e273]:
+                  - generic [ref=f5e274]:
+                    - generic [ref=f5e275]: "#CN-202610-1001"
+                    - generic [ref=f5e276]: Priya Sundaram • ₹1,847
+                  - generic [ref=f5e277]: Delivered
+            - generic [ref=f5e278]:
+              - generic [ref=f5e279]:
+                - heading "Registered Users" [level=3] [ref=f5e280]
+                - link "Manage Directory" [ref=f5e281] [cursor=pointer]:
+                  - /url: /admin/users
+              - generic [ref=f5e282]:
+                - generic [ref=f5e283]:
+                  - generic [ref=f5e284]:
+                    - generic [ref=f5e285]: R
+                    - generic [ref=f5e286]:
+                      - generic [ref=f5e287]: Rahul Sen
+                      - generic [ref=f5e288]: rahul@example.com
+                  - generic [ref=f5e289]: buyer
+                - generic [ref=f5e290]:
+                  - generic [ref=f5e291]:
+                    - generic [ref=f5e292]: P
+                    - generic [ref=f5e293]:
+                      - generic [ref=f5e294]: Priya Sundaram
+                      - generic [ref=f5e295]: priya@example.com
+                  - generic [ref=f5e296]: buyer
+                - generic [ref=f5e297]:
+                  - generic [ref=f5e298]:
+                    - generic [ref=f5e299]: D
+                    - generic [ref=f5e300]:
+                      - generic [ref=f5e301]: Dhruv Verma
+                      - generic [ref=f5e302]: dhruv@craftnest.in
+                  - generic [ref=f5e303]: seller
+                - generic [ref=f5e304]:
+                  - generic [ref=f5e305]:
+                    - generic [ref=f5e306]: K
+                    - generic [ref=f5e307]:
+                      - generic [ref=f5e308]: Kavya Patel
+                      - generic [ref=f5e309]: kavya@craftnest.in
+                  - generic [ref=f5e310]: seller
+                - generic [ref=f5e311]:
+                  - generic [ref=f5e312]:
+                    - generic [ref=f5e313]: A
+                    - generic [ref=f5e314]:
+                      - generic [ref=f5e315]: Aarohi Sharma
+                      - generic [ref=f5e316]: aarohi@craftnest.in
+                  - generic [ref=f5e317]: seller
+  - status [ref=f5e318]:
+    - alert [ref=f5e319]:
+      - generic [ref=f5e324]: Welcome back, CraftNest Admin!
+      - button "Dismiss notification" [ref=f5e325] [cursor=pointer]

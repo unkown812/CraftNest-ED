@@ -2,13 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Search,
-  SlidersHorizontal,
   ChevronLeft,
   ChevronRight,
   RotateCcw,
-  Sparkles,
   ShoppingBag,
-  Filter
+  AlertTriangle
 } from 'lucide-react';
 import api from '../../api/client';
 import ProductCard from '../../components/common/ProductCard';
@@ -42,7 +40,7 @@ const ShopPage = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [error, setError] = useState(false);
 
   // Sync state if URL query params change
   useEffect(() => {
@@ -55,6 +53,7 @@ const ShopPage = () => {
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
+      setError(false);
       const params = {
         page: currentPage,
         limit: 12,
@@ -74,6 +73,7 @@ const ShopPage = () => {
       }
     } catch (err) {
       console.error('Error fetching products:', err);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -105,364 +105,163 @@ const ShopPage = () => {
   };
 
   return (
-    <div style={{ backgroundColor: 'var(--color-warm-cream)', minHeight: '85vh', padding: '2.5rem 0 5rem 0' }}>
+    <div style={{ minHeight: '85vh', padding: 'var(--space-lg) 0 var(--space-section) 0' }}>
       <div className="container">
-        {/* Header Breadcrumb / Title */}
-        <div style={{ marginBottom: '2rem' }}>
-          <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '0.35rem' }}>
-            <span>Home</span> / <span style={{ color: 'var(--color-terracotta)', fontWeight: '600' }}>Artisan Catalogue</span>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
-            <div>
-              <h1 style={{ fontSize: '2.4rem', margin: 0 }}>Handmade Marketplace</h1>
-              <p style={{ margin: '0.35rem 0 0 0', color: 'var(--color-text-muted)' }}>
-                Showing {totalCount} authentic craft items handcrafted with heart
-              </p>
-            </div>
+        {/* Page header — mono eyebrow + display headline + body lead */}
+        <header style={{ marginBottom: 'var(--space-xl)' }}>
+          <p className="t-caption" style={{ margin: '0 0 var(--space-sm) 0' }}>The catalogue</p>
+          <h1 className="t-display-lg" style={{ margin: 0 }}>Handmade Marketplace</h1>
+          <p className="t-body" style={{ margin: 'var(--space-sm) 0 0 0' }}>
+            Authentic craft pieces made by Indian artisans, one drop at a time.
+          </p>
+        </header>
 
-            {/* Mobile Filter Toggle */}
-            <button
-              onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-              className="btn btn-outline btn-sm mobile-filter-btn"
-              style={{ display: 'none' }}
+        {/* Filter toolbar — pill search, price range, sort */}
+        <div className="toolbar shop-toolbar" style={{ marginBottom: 'var(--space-md)' }}>
+          <form
+            onSubmit={handleSearchSubmit}
+            role="search"
+            style={{ position: 'relative', width: 'min(320px, 100%)', flexShrink: 1 }}
+          >
+            <label htmlFor="shop-search" className="t-caption" style={{ position: 'absolute', left: '-9999px' }}>
+              Search creations
+            </label>
+            <Search size={16} aria-hidden="true" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+            <input
+              id="shop-search"
+              type="text"
+              placeholder="Keywords, maker, materials…"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="nav-search"
+            />
+          </form>
+
+          <div className="toolbar-spacer" />
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xxs)' }}>
+            <label htmlFor="shop-min-price" className="t-caption">Min ₹</label>
+            <input
+              id="shop-min-price"
+              type="number"
+              placeholder="0"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              className="form-input"
+              style={{ width: 110 }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xxs)' }}>
+            <label htmlFor="shop-max-price" className="t-caption">Max ₹</label>
+            <input
+              id="shop-max-price"
+              type="number"
+              placeholder="∞"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="form-input"
+              style={{ width: 110 }}
+            />
+          </div>
+
+          <button onClick={() => { setCurrentPage(1); fetchProducts(); }} className="btn btn-secondary btn-sm" style={{ alignSelf: 'flex-end' }}>
+            Apply price
+          </button>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xxs)' }}>
+            <label htmlFor="shop-sort" className="t-caption">Sort</label>
+            <select
+              id="shop-sort"
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="form-select"
+              style={{ width: 'auto' }}
             >
-              <SlidersHorizontal size={16} />
-              <span>Filters</span>
-            </button>
+              <option value="newest">Newest arrivals</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+              <option value="popular">Popularity / sales</option>
+              <option value="rating">Highest rated</option>
+            </select>
           </div>
         </div>
 
-        {/* Layout Grid: Sidebar Filters + Main Product Grid */}
+        {/* Category chips — mono taxonomy pills, selected state = primary surface */}
         <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '270px 1fr',
-            gap: '2.5rem',
-            alignItems: 'start'
-          }}
-          className="shop-layout-grid"
+          role="group"
+          aria-label="Filter by category"
+          style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 'var(--space-xs)', marginBottom: 'var(--space-md)' }}
         >
-          {/* Sidebar Filters */}
-          <aside
-            style={{
-              backgroundColor: '#fff',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '1.75rem',
-              boxShadow: 'var(--shadow-subtle)'
-            }}
-            className={`shop-sidebar ${mobileFilterOpen ? 'shop-sidebar-open' : ''}`}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingBottom: '1.25rem',
-                borderBottom: '1px solid var(--color-border-subtle)',
-                marginBottom: '1.5rem'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '700', fontSize: '1.05rem', color: 'var(--color-forest-green)' }}>
-                <SlidersHorizontal size={18} />
-                <span>Filters</span>
-              </div>
+          {CATEGORIES.map((cat) => {
+            const isSelected = selectedCategory === cat;
+            return (
               <button
-                onClick={handleResetFilters}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '0.8rem',
-                  color: 'var(--color-terracotta)',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
+                key={cat}
+                type="button"
+                onClick={() => handleCategorySelect(cat)}
+                className={isSelected ? 'badge badge-selected' : 'badge badge-outline'}
+                style={{ cursor: 'pointer', padding: 'var(--space-xxs) var(--space-sm)', border: isSelected ? '1px solid var(--color-primary)' : undefined }}
               >
-                <RotateCcw size={13} />
-                <span>Reset</span>
+                {cat}
               </button>
+            );
+          })}
+          {(selectedCategory !== 'All' || searchTerm || minPrice || maxPrice) && (
+            <button onClick={handleResetFilters} className="btn btn-ghost btn-sm">
+              <RotateCcw size={14} aria-hidden="true" />
+              <span>Reset filters</span>
+            </button>
+          )}
+        </div>
+
+        {/* Products state area */}
+        {loading ? (
+          <div className="page-loading" role="status" aria-label="Loading catalogue">
+            <div className="spinner" aria-hidden="true" />
+          </div>
+        ) : error ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 'var(--space-sm)' }}>
+            <div className="error-surface">
+              <AlertTriangle size={16} aria-hidden="true" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <span>We couldn&apos;t reach the marketplace just now. Give it another go.</span>
+            </div>
+            <button onClick={() => { fetchProducts(); }} className="btn btn-danger btn-sm">
+              Retry
+            </button>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon"><ShoppingBag size={26} aria-hidden="true" /></div>
+            <h3>No creations match your filters</h3>
+            <p>We couldn&apos;t find any handmade products for those filters. Try loosening your keywords or widening the price range.</p>
+            <button onClick={handleResetFilters} className="btn btn-ghost">
+              <span>Clear filters</span>
+            </button>
+          </div>
+        ) : (
+          <>
+            <p className="t-caption" style={{ margin: '0 0 var(--space-md) 0' }}>
+              {totalCount} results · page {currentPage} of {totalPages || 1}
+            </p>
+            <div className="grid-3">
+              {products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
             </div>
 
-            {/* Search Input in Sidebar */}
-            <div style={{ marginBottom: '1.75rem' }}>
-              <label style={{ fontSize: '0.85rem', fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>
-                Search Creations
-              </label>
-              <form onSubmit={handleSearchSubmit} style={{ position: 'relative' }}>
-                <input
-                  type="text"
-                  placeholder="Keywords, maker, materials..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="form-input"
-                  style={{ paddingRight: '2.5rem', fontSize: '0.88rem' }}
-                />
-                <button
-                  type="submit"
-                  style={{
-                    position: 'absolute',
-                    right: '8px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: 'var(--color-forest-green)'
-                  }}
-                >
-                  <Search size={16} />
-                </button>
-              </form>
-            </div>
-
-            {/* Categories */}
-            <div style={{ marginBottom: '1.75rem' }}>
-              <label style={{ fontSize: '0.85rem', fontWeight: '700', display: 'block', marginBottom: '0.75rem' }}>
-                Categories
-              </label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {CATEGORIES.map((cat) => {
-                  const isSelected = selectedCategory === cat;
-                  return (
-                    <button
-                      key={cat}
-                      onClick={() => handleCategorySelect(cat)}
-                      style={{
-                        textAlign: 'left',
-                        background: isSelected ? 'var(--color-forest-subtle)' : 'none',
-                        border: 'none',
-                        padding: '8px 12px',
-                        borderRadius: 'var(--radius-sm)',
-                        fontSize: '0.88rem',
-                        fontWeight: isSelected ? '700' : '500',
-                        color: isSelected ? 'var(--color-forest-green)' : 'var(--color-dark-text)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        transition: 'background 0.15s ease'
-                      }}
-                    >
-                      <span>{cat}</span>
-                      {isSelected && <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-forest-green)' }} />}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Price Filter */}
-            <div style={{ marginBottom: '1.5rem', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '1.5rem' }}>
-              <label style={{ fontSize: '0.85rem', fontWeight: '700', display: 'block', marginBottom: '0.75rem' }}>
-                Price Range (₹)
-              </label>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '0.75rem' }}>
-                <input
-                  type="number"
-                  placeholder="Min"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  className="form-input"
-                  style={{ padding: '6px 8px', fontSize: '0.85rem' }}
-                />
-                <span style={{ color: 'var(--color-text-muted)' }}>-</span>
-                <input
-                  type="number"
-                  placeholder="Max"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  className="form-input"
-                  style={{ padding: '6px 8px', fontSize: '0.85rem' }}
-                />
-              </div>
-              <button
-                onClick={() => { setCurrentPage(1); fetchProducts(); }}
-                className="btn btn-sm btn-primary"
-                style={{ width: '100%' }}
-              >
-                Apply Price
-              </button>
-            </div>
-          </aside>
-
-          {/* Main Products Area */}
-          <main>
-            {/* Top Toolbar */}
-            <div
-              style={{
-                backgroundColor: '#fff',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-md)',
-                padding: '0.85rem 1.25rem',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '1rem',
-                marginBottom: '1.75rem',
-                boxShadow: 'var(--shadow-subtle)'
-              }}
-            >
-              <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-                Page <strong style={{ color: 'var(--color-dark-text)' }}>{currentPage}</strong> of{' '}
-                <strong style={{ color: 'var(--color-dark-text)' }}>{totalPages || 1}</strong>
-              </div>
-
-              {/* Sort By Dropdown */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--color-text-muted)' }}>
-                  Sort by:
-                </span>
-                <select
-                  value={sortBy}
-                  onChange={(e) => {
-                    setSortBy(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="form-select"
-                  style={{ padding: '6px 12px', fontSize: '0.88rem', width: 'auto' }}
-                >
-                  <option value="newest">Newest Arrivals</option>
-                  <option value="price-asc">Price: Low to High</option>
-                  <option value="price-desc">Price: High to Low</option>
-                  <option value="popular">Popularity / Sales</option>
-                  <option value="rating">Highest Rated</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Active Filter Chips */}
-            {(selectedCategory !== 'All' || searchTerm || minPrice || maxPrice) && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '1.25rem' }}>
-                {selectedCategory !== 'All' && (
-                  <span className="badge badge-forest" style={{ padding: '6px 12px' }}>
-                    Category: {selectedCategory}
-                    <button
-                      onClick={() => setSelectedCategory('All')}
-                      style={{ background: 'none', border: 'none', marginLeft: '6px', cursor: 'pointer', color: 'inherit' }}
-                    >
-                      ×
-                    </button>
-                  </span>
-                )}
-                {searchTerm && (
-                  <span className="badge badge-terracotta" style={{ padding: '6px 12px' }}>
-                    Query: "{searchTerm}"
-                    <button
-                      onClick={() => setSearchTerm('')}
-                      style={{ background: 'none', border: 'none', marginLeft: '6px', cursor: 'pointer', color: 'inherit' }}
-                    >
-                      ×
-                    </button>
-                  </span>
-                )}
-                {(minPrice || maxPrice) && (
-                  <span className="badge badge-cream" style={{ padding: '6px 12px' }}>
-                    ₹{minPrice || 0} – ₹{maxPrice || '∞'}
-                    <button
-                      onClick={() => { setMinPrice(''); setMaxPrice(''); }}
-                      style={{ background: 'none', border: 'none', marginLeft: '6px', cursor: 'pointer', color: 'inherit' }}
-                    >
-                      ×
-                    </button>
-                  </span>
-                )}
-              </div>
-            )}
-
-            {/* Products Grid or Loading / Empty */}
-            {loading ? (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  minHeight: '350px',
-                  flexDirection: 'column',
-                  gap: '1rem'
-                }}
-              >
-                <div
-                  style={{
-                    width: '45px',
-                    height: '45px',
-                    border: '4px solid var(--color-soft-beige)',
-                    borderTopColor: 'var(--color-forest-green)',
-                    borderRadius: '50%',
-                    animation: 'spin 0.8s linear infinite'
-                  }}
-                />
-                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-                <p style={{ color: 'var(--color-text-muted)' }}>Discovering artisan crafts...</p>
-              </div>
-            ) : products.length === 0 ? (
-              <div
-                className="card"
-                style={{
-                  padding: '4rem 2rem',
-                  textAlign: 'center',
-                  backgroundColor: '#fff',
-                  border: '1px dashed var(--color-border)'
-                }}
-              >
-                <div
-                  style={{
-                    width: '64px',
-                    height: '64px',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--color-soft-beige)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 1.25rem auto',
-                    color: 'var(--color-forest-green)'
-                  }}
-                >
-                  <ShoppingBag size={28} />
-                </div>
-                <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>No creations match your search</h3>
-                <p style={{ color: 'var(--color-text-muted)', maxWidth: '420px', margin: '0 auto 1.5rem auto' }}>
-                  We couldn't find any handmade products matching those specific filters. Try loosening your keywords or price range.
-                </p>
-                <button onClick={handleResetFilters} className="btn btn-secondary">
-                  <span>Reset All Filters</span>
-                </button>
-              </div>
-            ) : (
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                  gap: '1.75rem'
-                }}
-              >
-                {products.map((product) => (
-                  <ProductCard key={product._id} product={product} />
-                ))}
-              </div>
-            )}
-
-            {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: '8px',
-                  marginTop: '3.5rem'
-                }}
-              >
+              <nav className="pagination" aria-label="Catalogue pages">
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="btn btn-outline btn-sm"
-                  style={{ opacity: currentPage === 1 ? 0.4 : 1 }}
+                  className="btn btn-secondary btn-sm"
+                  aria-label="Previous page"
                 >
-                  <ChevronLeft size={16} />
+                  <ChevronLeft size={16} aria-hidden="true" />
                   <span>Previous</span>
                 </button>
 
@@ -473,18 +272,9 @@ const ShopPage = () => {
                     <button
                       key={pageNum}
                       onClick={() => setCurrentPage(pageNum)}
-                      style={{
-                        width: '38px',
-                        height: '38px',
-                        borderRadius: 'var(--radius-full)',
-                        border: '1px solid',
-                        borderColor: isActive ? 'var(--color-forest-green)' : 'var(--color-border)',
-                        backgroundColor: isActive ? 'var(--color-forest-green)' : '#fff',
-                        color: isActive ? '#fff' : 'var(--color-dark-text)',
-                        fontWeight: '700',
-                        fontSize: '0.9rem',
-                        cursor: 'pointer'
-                      }}
+                      aria-current={isActive ? 'page' : undefined}
+                      aria-label={`Page ${pageNum}`}
+                      className={`btn btn-sm ${isActive ? 'btn-primary' : 'btn-secondary'}`}
                     >
                       {pageNum}
                     </button>
@@ -494,33 +284,24 @@ const ShopPage = () => {
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="btn btn-outline btn-sm"
-                  style={{ opacity: currentPage === totalPages ? 0.4 : 1 }}
+                  className="btn btn-secondary btn-sm"
+                  aria-label="Next page"
                 >
                   <span>Next</span>
-                  <ChevronRight size={16} />
+                  <ChevronRight size={16} aria-hidden="true" />
                 </button>
-              </div>
+              </nav>
             )}
-          </main>
-        </div>
+          </>
+        )}
       </div>
 
-      {/* Responsive layout styles */}
+      {/* Responsive: below 560px the toolbar fields go full width and stack */}
       <style>{`
-        @media (max-width: 900px) {
-          .shop-layout-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .mobile-filter-btn {
-            display: inline-flex !important;
-          }
-          .shop-sidebar {
-            display: none;
-          }
-          .shop-sidebar-open {
-            display: block !important;
-          }
+        @media (max-width: 560px) {
+          .shop-toolbar > * { flex: 1 1 100%; }
+          .shop-toolbar .form-input,
+          .shop-toolbar .form-select { width: 100%; }
         }
       `}</style>
     </div>

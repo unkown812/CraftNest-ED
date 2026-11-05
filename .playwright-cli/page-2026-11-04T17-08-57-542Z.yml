@@ -1,0 +1,296 @@
+- generic [ref=f35e2]:
+  - banner [ref=f35e3]:
+    - generic [ref=f35e4]:
+      - link "CraftNest home" [ref=f35e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f35e6]: CraftNest
+      - textbox "Search products" [ref=f35e11]:
+        - /placeholder: Search candles, pottery, crochet…
+      - navigation "Primary" [ref=f35e12]:
+        - generic [ref=f35e13]:
+          - link "Shop All" [ref=f35e14] [cursor=pointer]:
+            - /url: /shop
+          - link "Candles" [ref=f35e15] [cursor=pointer]:
+            - /url: /shop?category=Handmade%20Candles
+          - link "Crochet" [ref=f35e16] [cursor=pointer]:
+            - /url: /shop?category=Crochet%20and%20Knitting
+          - link "Sell on CraftNest" [ref=f35e17] [cursor=pointer]:
+            - /url: /become-seller
+      - generic [ref=f35e23]:
+        - link "Wishlist" [ref=f35e24] [cursor=pointer]:
+          - /url: /buyer/wishlist
+        - link "Shopping cart" [ref=f35e27] [cursor=pointer]:
+          - /url: /cart
+        - generic [ref=f35e31]:
+          - link "Log In" [ref=f35e32] [cursor=pointer]:
+            - /url: /login
+          - link "Join" [ref=f35e33] [cursor=pointer]:
+            - /url: /register
+  - generic [ref=f35e35]:
+    - text: Handmade with heart · Free shipping across India on orders above ₹999 ·
+    - link "Explore crafts" [ref=f35e36] [cursor=pointer]:
+      - /url: /shop
+  - main [ref=f35e37]:
+    - generic [ref=f35e38]:
+      - generic [ref=f35e41]:
+        - generic [ref=f35e42]:
+          - generic [ref=f35e43]: Handmade with heart
+          - heading "Discover handmade treasures." [level=1] [ref=f35e44]
+          - paragraph [ref=f35e45]: Unique creations, crafted with care by independent makers. Direct from the hands and hearts of local potters, weavers, candle artisans, and creators across India.
+          - generic [ref=f35e46]:
+            - link "Shop handmade" [ref=f35e47] [cursor=pointer]:
+              - /url: /shop
+            - link "Become a seller" [ref=f35e49] [cursor=pointer]:
+              - /url: /become-seller
+          - generic [ref=f35e53]:
+            - generic [ref=f35e54]: 100% Authentic Handmade
+            - generic [ref=f35e59]: Direct Artisan Support
+            - generic [ref=f35e64]: Secure Pan-India Delivery
+        - generic [ref=f35e69]:
+          - img "CraftNest artisan studio" [ref=f35e71]
+          - generic [ref=f35e72]:
+            - generic [ref=f35e73]: 100+ Master Artisans
+            - generic [ref=f35e74]: From 22 states across India
+      - generic [ref=f35e76]:
+        - generic [ref=f35e77]:
+          - generic [ref=f35e78]: Curated collections
+          - heading "Explore popular categories" [level=2] [ref=f35e79]
+          - paragraph [ref=f35e80]: From scented aromatherapy candles to hand-woven chunky blankets and heritage paintings, every craft tells a story.
+        - generic [ref=f35e81]:
+          - link "Handmade Candles Handmade Candles Soy wax, botanicals & crackling wooden wicks Browse collection" [ref=f35e82] [cursor=pointer]:
+            - /url: /shop?category=Handmade%20Candles
+            - img "Handmade Candles" [ref=f35e84]
+            - generic [ref=f35e85]:
+              - generic [ref=f35e86]: Handmade Candles
+              - paragraph [ref=f35e87]: Soy wax, botanicals & crackling wooden wicks
+              - generic [ref=f35e88]: Browse collection
+          - link "Jewellery Jewellery Pressed botanicals, resin & terracotta earrings Browse collection" [ref=f35e91] [cursor=pointer]:
+            - /url: /shop?category=Jewellery
+            - img "Jewellery" [ref=f35e93]
+            - generic [ref=f35e94]:
+              - generic [ref=f35e95]: Jewellery
+              - paragraph [ref=f35e96]: Pressed botanicals, resin & terracotta earrings
+              - generic [ref=f35e97]: Browse collection
+          - link "Crochet and Knitting Crochet and Knitting Organic cotton blankets, toys & eternal blossoms Browse collection" [ref=f35e100] [cursor=pointer]:
+            - /url: /shop?category=Crochet%20and%20Knitting
+            - img "Crochet and Knitting" [ref=f35e102]
+            - generic [ref=f35e103]:
+              - generic [ref=f35e104]: Crochet and Knitting
+              - paragraph [ref=f35e105]: Organic cotton blankets, toys & eternal blossoms
+              - generic [ref=f35e106]: Browse collection
+          - link "Home Décor Home Décor Ceramic mugs, macramé tapestries & wall art Browse collection" [ref=f35e109] [cursor=pointer]:
+            - /url: /shop?category=Home%20D%C3%A9cor
+            - img "Home Décor" [ref=f35e111]
+            - generic [ref=f35e112]:
+              - generic [ref=f35e113]: Home Décor
+              - paragraph [ref=f35e114]: Ceramic mugs, macramé tapestries & wall art
+              - generic [ref=f35e115]: Browse collection
+          - link "Paintings and Art Paintings and Art Original folk Madhubani & watercolor pieces Browse collection" [ref=f35e118] [cursor=pointer]:
+            - /url: /shop?category=Paintings%20and%20Art
+            - img "Paintings and Art" [ref=f35e120]
+            - generic [ref=f35e121]:
+              - generic [ref=f35e122]: Paintings and Art
+              - paragraph [ref=f35e123]: Original folk Madhubani & watercolor pieces
+              - generic [ref=f35e124]: Browse collection
+          - link "Greeting Cards Greeting Cards Pressed marigold deckle-edge cards with envelopes Browse collection" [ref=f35e127] [cursor=pointer]:
+            - /url: /shop?category=Greeting%20Cards
+            - img "Greeting Cards" [ref=f35e129]
+            - generic [ref=f35e130]:
+              - generic [ref=f35e131]: Greeting Cards
+              - paragraph [ref=f35e132]: Pressed marigold deckle-edge cards with envelopes
+              - generic [ref=f35e133]: Browse collection
+          - link "Gift Hampers Gift Hampers Artisanal self-care crates & festival curations Browse collection" [ref=f35e136] [cursor=pointer]:
+            - /url: /shop?category=Gift%20Hampers
+            - img "Gift Hampers" [ref=f35e138]
+            - generic [ref=f35e139]:
+              - generic [ref=f35e140]: Gift Hampers
+              - paragraph [ref=f35e141]: Artisanal self-care crates & festival curations
+              - generic [ref=f35e142]: Browse collection
+          - link "Personalized Gifts Personalized Gifts Custom pyrography wood nameplates & keepsakes Browse collection" [ref=f35e145] [cursor=pointer]:
+            - /url: /shop?category=Personalized%20Gifts
+            - img "Personalized Gifts" [ref=f35e147]
+            - generic [ref=f35e148]:
+              - generic [ref=f35e149]: Personalized Gifts
+              - paragraph [ref=f35e150]: Custom pyrography wood nameplates & keepsakes
+              - generic [ref=f35e151]: Browse collection
+      - generic [ref=f35e157]:
+        - generic [ref=f35e158]: How the craft is made
+        - heading "Every piece starts long before it sells." [level=2] [ref=f35e159]
+        - paragraph [ref=f35e160]: No factories, no molds, no rush. Each craft on CraftNest follows a slow, transparent system from source material to your doorstep.
+        - generic [ref=f35e161]:
+          - generic [ref=f35e162]:
+            - generic [ref=f35e163]: Step 01
+            - heading "Sourced by hand" [level=3] [ref=f35e164]
+            - paragraph [ref=f35e165]: Artisans gather soy wax, raw terracotta clay, organic cotton and reclaimed teak from trusted local suppliers.
+          - generic [ref=f35e166]:
+            - generic [ref=f35e167]: Step 02
+            - heading "Slow-crafted in home studios" [level=3] [ref=f35e168]
+            - paragraph [ref=f35e169]: Poured, knotted, thrown and painted in small batches — never on assembly lines.
+          - generic [ref=f35e170]:
+            - generic [ref=f35e171]: Step 03
+            - heading "Inspected & shipped with care" [level=3] [ref=f35e172]
+            - paragraph [ref=f35e173]: Every order is quality-checked, wrapped in sustainable protective packaging, then tracked to your door.
+      - generic [ref=f35e176]:
+        - generic [ref=f35e177]:
+          - generic [ref=f35e178]: Artisan highlights
+          - heading "Featured handmade products" [level=2] [ref=f35e179]
+        - link "View all featured" [ref=f35e180] [cursor=pointer]:
+          - /url: /shop?featured=true
+      - generic [ref=f35e188]:
+        - generic [ref=f35e189]:
+          - generic [ref=f35e190]: Community favorites
+          - heading "Trending in the nest" [level=2] [ref=f35e191]
+        - link "View all trending" [ref=f35e192] [cursor=pointer]:
+          - /url: /shop?sort=popular
+      - generic [ref=f35e201]:
+        - generic [ref=f35e202]:
+          - generic [ref=f35e203]: Meaningful gifting
+          - heading "Handcrafted & personalized gifts for every occasion" [level=2] [ref=f35e204]
+          - paragraph [ref=f35e205]: Make weddings, birthdays, and anniversaries unforgettable. Many of our makers offer custom engravings, embroidered monograms, and personalized calligraphy messages.
+          - link "Explore personalized gifts" [ref=f35e207] [cursor=pointer]:
+            - /url: /shop?category=Personalized%20Gifts
+        - generic [ref=f35e211]:
+          - generic [ref=f35e212]:
+            - generic [ref=f35e213]: Bestseller
+            - text: Engraved teak wood nameplates
+          - generic [ref=f35e214]:
+            - generic [ref=f35e215]: Made to order
+            - text: Embroidered monogram keepsakes
+          - generic [ref=f35e216]:
+            - generic [ref=f35e217]: New arrivals
+            - text: Pressed-flower greeting sets
+          - generic [ref=f35e218]:
+            - generic [ref=f35e219]: Festive pick
+            - text: Curated self-care gift hampers
+      - generic [ref=f35e221]:
+        - generic [ref=f35e222]:
+          - generic [ref=f35e223]: Meet the makers
+          - heading "Featured local artisans" [level=2] [ref=f35e224]
+          - paragraph [ref=f35e225]: Behind every product is a dedicated craftsman, independent artist, or home maker honing their slow craft.
+        - generic [ref=f35e226]:
+          - generic [ref=f35e227]:
+            - img "Aarohi Sharma" [ref=f35e229]
+            - generic [ref=f35e230]:
+              - generic [ref=f35e231]: Candle Maker
+              - heading "Aarohi Botanicals & Candles" [level=3] [ref=f35e232]
+              - generic [ref=f35e233]: Aarohi Sharma
+              - generic [ref=f35e234]: Jaipur, Rajasthan
+              - paragraph [ref=f35e235]: Hand-poured 100% soy candles and botanical aromatherapy
+            - link "Visit shop storefront" [ref=f35e236] [cursor=pointer]:
+              - /url: /shop?search=Aarohi%20Sharma
+          - generic [ref=f35e240]:
+            - img "Kavya Patel" [ref=f35e242]
+            - generic [ref=f35e243]:
+              - generic [ref=f35e244]: Fiber Artist
+              - heading "Kavya Knotwork & Crochet" [level=3] [ref=f35e245]
+              - generic [ref=f35e246]: Kavya Patel
+              - generic [ref=f35e247]: Ahmedabad, Gujarat
+              - paragraph [ref=f35e248]: Slow-crafted merino blankets and organic macramé wall tapestries
+            - link "Visit shop storefront" [ref=f35e249] [cursor=pointer]:
+              - /url: /shop?search=Kavya%20Patel
+          - generic [ref=f35e253]:
+            - img "Dhruv Verma" [ref=f35e255]
+            - generic [ref=f35e256]:
+              - generic [ref=f35e257]: Master Potter
+              - heading "Mitti & Clay Studio" [level=3] [ref=f35e258]
+              - generic [ref=f35e259]: Dhruv Verma
+              - generic [ref=f35e260]: Pune, Maharashtra
+              - paragraph [ref=f35e261]: Earth-fired stoneware pottery and pressed wildflower botanical resin
+            - link "Visit shop storefront" [ref=f35e262] [cursor=pointer]:
+              - /url: /shop?search=Dhruv%20Verma
+      - generic [ref=f35e267]:
+        - generic [ref=f35e268]:
+          - generic [ref=f35e269]: Real experiences
+          - heading "Loved by conscious shoppers" [level=2] [ref=f35e270]
+          - paragraph [ref=f35e271]: Read verified feedback from customers who welcomed our handcrafted pieces into their homes.
+        - generic [ref=f35e272]:
+          - generic [ref=f35e273]:
+            - paragraph [ref=f35e286]: "\"The handcrafted lavender candle arrived packaged like a precious gift with real dried flower petals. It fills my reading nook with such serene natural calmness.\""
+            - generic [ref=f35e287]:
+              - generic [ref=f35e288]: Ananya Deshmukh
+              - generic [ref=f35e289]: Verified buyer • Mumbai
+              - generic [ref=f35e290]: "Purchased: Lavender & Dried Botanical Candle"
+          - generic [ref=f35e291]:
+            - paragraph [ref=f35e304]: "\"I commissioned a personalized wood nameplate for our new house warming. The pyrography detail and teak grain are stunning. Supporting actual artisans feels deeply rewarding.\""
+            - generic [ref=f35e305]:
+              - generic [ref=f35e306]: Vikram Sethi
+              - generic [ref=f35e307]: Verified buyer • Bengaluru
+              - generic [ref=f35e308]: "Purchased: Hand-Engraved Teak Wood Plaque"
+          - generic [ref=f35e309]:
+            - paragraph [ref=f35e322]: "\"CraftNest makes finding authentic handmade Indian artistry effortless. The ceramic coffee mug has such a gorgeous forest reactive glaze. Exceptional craftsmanship!\""
+            - generic [ref=f35e323]:
+              - generic [ref=f35e324]: Meenakshi Iyer
+              - generic [ref=f35e325]: Verified buyer • Chennai
+              - generic [ref=f35e326]: "Purchased: Hand-Thrown Ceramic Coffee Mug"
+  - contentinfo [ref=f35e327]:
+    - generic [ref=f35e328]:
+      - generic [ref=f35e329]:
+        - generic [ref=f35e330]: CraftNest
+        - paragraph [ref=f35e331]: CraftNest connects home-based creators and independent artisans with conscious shoppers looking for one-of-a-kind handmade treasures.
+        - link "support@craftnest.in" [ref=f35e332] [cursor=pointer]:
+          - /url: mailto:support@craftnest.in
+        - generic [ref=f35e336]: Mumbai, Maharashtra, India
+      - generic [ref=f35e340]:
+        - navigation "Categories" [ref=f35e341]:
+          - list [ref=f35e343]:
+            - listitem [ref=f35e344]:
+              - link "Handmade Candles" [ref=f35e345] [cursor=pointer]:
+                - /url: /shop?category=Handmade%20Candles
+            - listitem [ref=f35e346]:
+              - link "Artisanal Jewellery" [ref=f35e347] [cursor=pointer]:
+                - /url: /shop?category=Jewellery
+            - listitem [ref=f35e348]:
+              - link "Crochet & Knitting" [ref=f35e349] [cursor=pointer]:
+                - /url: /shop?category=Crochet%20and%20Knitting
+            - listitem [ref=f35e350]:
+              - link "Pottery & Home Décor" [ref=f35e351] [cursor=pointer]:
+                - /url: /shop?category=Home%20D%C3%A9cor
+            - listitem [ref=f35e352]:
+              - link "Paintings & Art" [ref=f35e353] [cursor=pointer]:
+                - /url: /shop?category=Paintings%20and%20Art
+            - listitem [ref=f35e354]:
+              - link "Curated Gift Hampers" [ref=f35e355] [cursor=pointer]:
+                - /url: /shop?category=Gift%20Hampers
+        - navigation "Customer care" [ref=f35e356]:
+          - generic [ref=f35e357]: Customer Care
+          - list [ref=f35e358]:
+            - listitem [ref=f35e359]:
+              - link "About CraftNest" [ref=f35e360] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=f35e361]:
+              - link "Become a Seller" [ref=f35e362] [cursor=pointer]:
+                - /url: /become-seller
+            - listitem [ref=f35e363]:
+              - link "Shipping & Delivery Policy" [ref=f35e364] [cursor=pointer]:
+                - /url: /shipping-policy
+            - listitem [ref=f35e365]:
+              - link "Returns & Cancellations" [ref=f35e366] [cursor=pointer]:
+                - /url: /returns-policy
+            - listitem [ref=f35e367]:
+              - link "Privacy & Data Policy" [ref=f35e368] [cursor=pointer]:
+                - /url: /privacy-policy
+            - listitem [ref=f35e369]:
+              - link "Contact Artisan Support" [ref=f35e370] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f35e371]:
+          - generic [ref=f35e372]: CraftNest Stories
+          - paragraph [ref=f35e373]: Receive stories from independent makers, secret artisan discounts, and new collection launches.
+          - generic [ref=f35e374]:
+            - generic [ref=f35e375]:
+              - textbox "Email address for newsletter" [ref=f35e376]:
+                - /placeholder: Your email address
+              - button "Subscribe to newsletter" [ref=f35e377] [cursor=pointer]
+            - generic [ref=f35e381] [cursor=pointer]:
+              - checkbox "I agree to receive handmade inspiration and accept the privacy policy." [ref=f35e382]
+              - generic [ref=f35e383]: I agree to receive handmade inspiration and accept the privacy policy.
+      - separator [ref=f35e384]
+      - generic [ref=f35e385]:
+        - generic [ref=f35e386]: © 2026 CraftNest · Handmade with heart · All rights reserved
+        - generic [ref=f35e389]:
+          - link "Privacy" [ref=f35e390] [cursor=pointer]:
+            - /url: /privacy-policy
+          - link "Terms" [ref=f35e391] [cursor=pointer]:
+            - /url: /returns-policy
+          - link "Shipping" [ref=f35e392] [cursor=pointer]:
+            - /url: /shipping-policy
+  - status

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Store, Check, X, ShieldAlert, CheckCircle, AlertTriangle, Eye } from 'lucide-react';
+import { Store, Check, RotateCcw, ShieldAlert } from 'lucide-react';
 import api from '../../api/client';
 import { useToast } from '../../context/ToastContext';
 
@@ -46,41 +46,44 @@ const AdminSellersPage = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: '4rem 0', textAlign: 'center' }}>
-        <p>Loading seller directory...</p>
+      <div className="page-loading">
+        <div className="spinner" />
       </div>
     );
   }
 
+  const statusBadge = (status) =>
+    status === 'approved' ? 'badge-success' : status === 'pending' ? 'badge-cream' : 'badge-error';
+
   return (
-    <div>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', margin: 0, color: 'var(--color-forest-green)' }}>
-          Seller Verification & Directory ({sellers.length})
-        </h1>
-        <p style={{ color: 'var(--color-text-muted)', margin: '4px 0 0 0' }}>
-          Inspect artisan applications, verify maker profiles, approve or suspend seller accounts
-        </p>
+    <div className="page-stack" style={{ gap: 'var(--space-lg)' }}>
+      {/* Page header */}
+      <div className="toolbar">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xxs)' }}>
+          <span className="t-caption">Admin console</span>
+          <h1 className="t-headline" style={{ margin: 0 }}>
+            Seller Verification &amp; Directory
+          </h1>
+          <p className="t-body-sm w330" style={{ margin: 0 }}>
+            Inspect artisan applications, verify maker profiles, approve or suspend seller accounts
+          </p>
+        </div>
+        <div className="toolbar-spacer" />
+        <span className="badge badge-neutral">{sellers.length} sellers</span>
       </div>
 
-      <div
-        className="card"
-        style={{
-          backgroundColor: '#fff',
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'hidden'
-        }}
-      >
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+      {/* Seller directory */}
+      <div className="table-wrap">
+        <div className="table-scroll">
+          <table className="table">
             <thead>
-              <tr style={{ backgroundColor: 'var(--color-cream-light)', borderBottom: '1px solid var(--color-border)' }}>
-                <th style={{ padding: '12px 16px' }}>Shop & Artisan</th>
-                <th style={{ padding: '12px 16px' }}>Craft Speciality</th>
-                <th style={{ padding: '12px 16px' }}>Location</th>
-                <th style={{ padding: '12px 16px' }}>Contact</th>
-                <th style={{ padding: '12px 16px' }}>Approval Status</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right' }}>Moderation Actions</th>
+              <tr>
+                <th>Shop &amp; Artisan</th>
+                <th>Craft Speciality</th>
+                <th>Location</th>
+                <th>Contact</th>
+                <th>Approval Status</th>
+                <th style={{ textAlign: 'right' }}>Moderation Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -88,77 +91,59 @@ const AdminSellersPage = () => {
                 const status = seller.approvalStatus;
 
                 return (
-                  <tr key={seller._id} style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
-                    <td style={{ padding: '12px 16px' }}>
+                  <tr key={seller._id}>
+                    <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div
-                          style={{
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: '50%',
-                            backgroundColor: 'var(--color-soft-beige)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontWeight: '700',
-                            color: 'var(--color-forest-green)',
-                            flexShrink: 0
-                          }}
+                        <span
+                          className="avatar"
+                          style={{ width: '40px', height: '40px', fontSize: '15px' }}
                         >
                           {seller.shopName ? seller.shopName[0] : 'S'}
-                        </div>
+                        </span>
                         <div>
-                          <div style={{ fontWeight: '700', color: 'var(--color-forest-green)' }}>
-                            {seller.shopName}
-                          </div>
-                          <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
+                          <div className="t-body-sm w480">{seller.shopName}</div>
+                          <div className="t-caption" style={{ marginTop: 'var(--space-xxs)' }}>
                             {seller.userId?.name || 'Artisan Maker'}
                           </div>
                         </div>
                       </div>
                     </td>
 
-                    <td style={{ padding: '12px 16px' }}>
+                    <td className="t-body-sm">
                       {seller.contactDetails?.craftSpeciality || 'Handmade Crafts'}
                     </td>
 
-                    <td style={{ padding: '12px 16px' }}>
+                    <td className="t-body-sm">
                       {seller.contactDetails?.city || 'India'}, {seller.contactDetails?.state || ''}
                     </td>
 
-                    <td style={{ padding: '12px 16px' }}>
-                      <div style={{ fontSize: '0.8rem' }}>{seller.contactDetails?.email || seller.userId?.email}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
+                    <td className="t-body-sm">
+                      <div>{seller.contactDetails?.email || seller.userId?.email}</div>
+                      <div className="t-caption" style={{ marginTop: 'var(--space-xxs)' }}>
                         {seller.contactDetails?.phone || seller.userId?.phone || 'No phone'}
                       </div>
                     </td>
 
-                    <td style={{ padding: '12px 16px' }}>
-                      <span
-                        className={`badge ${
-                          status === 'approved'
-                            ? 'badge-success'
-                            : status === 'pending'
-                            ? 'badge-warning'
-                            : 'badge-error'
-                        }`}
-                        style={{ fontSize: '0.72rem' }}
-                      >
-                        {status}
-                      </span>
+                    <td>
+                      <span className={`badge ${statusBadge(status)}`}>{status}</span>
                     </td>
 
-                    <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                      <div style={{ display: 'inline-flex', gap: '6px' }}>
+                    <td style={{ textAlign: 'right' }}>
+                      <div
+                        style={{
+                          display: 'inline-flex',
+                          gap: 'var(--space-xxs)',
+                          alignItems: 'center'
+                        }}
+                      >
                         {status !== 'approved' && (
                           <button
                             onClick={() => handleUpdateStatus(seller._id, 'approved')}
                             disabled={updatingId === seller._id}
-                            className="btn btn-sm btn-primary"
-                            style={{ padding: '4px 10px', fontSize: '0.78rem' }}
+                            className="btn-icon btn-icon-ghost"
+                            aria-label={`Approve ${seller.shopName || 'seller'}`}
                           >
-                            <Check size={13} />
-                            <span>Approve</span>
+                            <Check size={16} aria-hidden="true" />
                           </button>
                         )}
 
@@ -166,15 +151,10 @@ const AdminSellersPage = () => {
                           <button
                             onClick={() => handleUpdateStatus(seller._id, 'suspended')}
                             disabled={updatingId === seller._id}
-                            className="btn btn-sm btn-outline"
-                            style={{
-                              padding: '4px 10px',
-                              fontSize: '0.78rem',
-                              color: 'var(--color-error)',
-                              borderColor: 'var(--color-error)'
-                            }}
+                            className="btn btn-sm btn-danger"
+                            aria-label={`Suspend ${seller.shopName || 'seller'}`}
                           >
-                            <ShieldAlert size={13} />
+                            <ShieldAlert size={14} aria-hidden="true" />
                             <span>Suspend</span>
                           </button>
                         )}
@@ -183,10 +163,10 @@ const AdminSellersPage = () => {
                           <button
                             onClick={() => handleUpdateStatus(seller._id, 'approved')}
                             disabled={updatingId === seller._id}
-                            className="btn btn-sm btn-outline"
-                            style={{ padding: '4px 10px', fontSize: '0.78rem' }}
+                            className="btn-icon btn-icon-ghost"
+                            aria-label={`Reinstate ${seller.shopName || 'seller'}`}
                           >
-                            <span>Reinstate</span>
+                            <RotateCcw size={16} aria-hidden="true" />
                           </button>
                         )}
                       </div>
@@ -197,6 +177,20 @@ const AdminSellersPage = () => {
             </tbody>
           </table>
         </div>
+
+        {sellers.length === 0 && (
+          <div style={{ padding: '0 var(--space-lg) var(--space-xl)' }}>
+            <div className="empty-state">
+              <span className="empty-icon">
+                <Store size={22} aria-hidden="true" />
+              </span>
+              <h3 className="t-headline">No artisan applications yet</h3>
+              <p className="t-body-sm w330">
+                Seller applications will appear here as makers onboard to the marketplace.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
